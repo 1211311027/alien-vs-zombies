@@ -24,7 +24,7 @@ int main()
     int BoardColumns = 9;
     int Zombie = 1;
     char changeSettings;
-cout << " --_--------------" << endl;
+    cout << " --_--------------" << endl;
     cout << "  = Default Game Settings! =" << endl;
     cout << " _--------------_-" << endl;
     cout << "Board Rows : " << BoardRows << endl;
