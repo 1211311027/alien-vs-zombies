@@ -52,10 +52,10 @@ int main() {
       cin.ignore(256, '\n');
       cin >> input;
     }
+    BoardColumns = input;
     cout << endl;
     cout << "Zombie Settings" << endl;
     cout << "-----------------" << endl;
-    BoardColumns = input;
     cout << "Enter number of zombies => ";
     cin >> input;
     while (cin.fail()) {
@@ -70,6 +70,8 @@ int main() {
     pf::Pause();
     cin.get();
   }
+
+  pf::CreateGameBoard();
 
   return 0;
 }
