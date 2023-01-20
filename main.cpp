@@ -17,35 +17,30 @@ using namespace std;
 
 int main() {
 
-  cout << "Assignment (Part 1)" << endl;
-  cout << "Let's Get Started!" << endl;
-
   int BoardRows = 5;
   int BoardColumns = 9;
   int Zombie = 1;
   char changeSettings;
-  cout << " --_--------------" << endl;
-  cout << "  = Default Game Settings! =" << endl;
-  cout << " _--------------_-" << endl;
-  cout << "Board Rows : " << BoardRows << endl;
-  cout << "Board Columns: " << BoardColumns << endl;
-  cout << "Zombie Count: " << Zombie << endl;
-  cout << "Do you wish to change the game default settings (y/n)? ";
+  cout << "Default Game Settings" << endl;
+  cout << "-----------------------" << endl;
+  cout << "Board Rows    : " << BoardRows << endl;
+  cout << "Board Columns : " << BoardColumns << endl;
+  cout << "Zombie Count  : " << Zombie << endl;
+  cout << endl;
+  cout << "Do you wish to change the game default settings (y/n)? => ";
   cin >> changeSettings;
 
-  while (changeSettings == 'y' || changeSettings == 'Y') {
+  if (toupper(changeSettings) == 'Y') {
     pf::ClearScreen();
     int input;
-    cout << "Enter Rows: ";
+    cout << "Board Settings" << endl;
+    cout << "----------------" << endl;
+    cout << "Enter rows => ";
     cin >> input;
     while (cin.fail()) {
       cout << "Invalid input. Enter a number: ";
       cin.clear();
       cin.ignore(256, '\n');
-      cin >> input;
-    }
-    while (input % 2 == 0) {
-      cout << "Invalid input. Enter an odd number: ";
       cin >> input;
     }
     BoardRows = input;
@@ -57,12 +52,11 @@ int main() {
       cin.ignore(256, '\n');
       cin >> input;
     }
-    while (input % 2 == 0) {
-      cout << "Invalid input. Enter an odd number: ";
-      cin >> input;
-    }
+    cout << endl;
+    cout << "Zombie Settings" << endl;
+    cout << "-----------------" << endl;
     BoardColumns = input;
-    cout << "Enter the number of Zombie: ";
+    cout << "Enter number of zombies => ";
     cin >> input;
     while (cin.fail()) {
       cout << "Invalid input. Enter a number: ";
@@ -70,17 +64,12 @@ int main() {
       cin.ignore(256, '\n');
       cin >> input;
     }
-    while (input % 2 == 0) {
-      cout << "Invalid input. Enter an odd number: ";
-      cin >> input;
-    }
     Zombie = input;
     cout << endl;
     cout << "Settings Updated." << endl;
-    cout << "Press any key to continue." << endl;
+    pf::Pause();
     cin.get();
-    return 0;
   }
+
   return 0;
-  pf::Pause();
 }
