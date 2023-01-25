@@ -12,15 +12,56 @@
 // TODO: Fill in the missing information above and delete this line.
 
 #include "pf/helper.h"
+#include <cstdlib>
 #include <iostream>
 using namespace std;
 
+int BoardRows = 5;
+int BoardColumns = 9;
+int Zombie = 1;
+char changeSettings;
+
+void CreateBorder() {
+
+  for (int border = 0; border < BoardColumns; border++) {
+    cout << "+";
+    cout << "-";
+  }
+  cout << "+" << endl;
+}
+
+void CreateGameBoard() {
+  char Board[BoardRows][BoardColumns];
+  for (int row = 0; row < BoardRows; ++row) {
+    for (int col = 0; col < BoardColumns; ++col) {
+      int random_number = std::rand() % 2;
+      if (random_number)
+        Board[row][col] = '*';
+      else
+        Board[row][col] = 'r';
+    }
+  }
+}
+
+void ShowGameBoard() {
+  char Board[BoardRows][BoardColumns];
+
+  cout << ".: Alien vs Zombie :." << endl;
+  for (int row = 0; row < BoardRows; ++row) {
+    CreateBorder();
+    // cout << row + 1;
+    for (int col = 0; col < BoardColumns; ++col) {
+      cout << "|";
+      std::cout << Board[row][col];
+    }
+    cout << "|";
+    std::cout << std::endl;
+  }
+  CreateBorder();
+}
+
 int main() {
 
-  int BoardRows = 5;
-  int BoardColumns = 9;
-  int Zombie = 1;
-  char changeSettings;
   cout << "Default Game Settings" << endl;
   cout << "-----------------------" << endl;
   cout << "Board Rows    : " << BoardRows << endl;
@@ -69,9 +110,14 @@ int main() {
     cout << "Settings Updated." << endl;
     pf::Pause();
     cin.get();
+    pf::ClearScreen();
+  } else {
+    pf::ClearScreen();
   }
 
-  pf::CreateGameBoard();
+  CreateGameBoard();
+  ShowGameBoard();
+  pf::Pause();
 
   return 0;
 }
