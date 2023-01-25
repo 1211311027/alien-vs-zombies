@@ -84,6 +84,10 @@ int main() {
       cin.ignore(256, '\n');
       cin >> input;
     }
+    while (input % 2 == 0) {
+      cout << "Invalid input. Enter an odd number: ";
+      cin >> input;
+    }
     BoardRows = input;
     cout << "Enter Columns: ";
     cin >> input;
@@ -103,6 +107,10 @@ int main() {
       cout << "Invalid input. Enter a number: ";
       cin.clear();
       cin.ignore(256, '\n');
+      cin >> input;
+    }
+    while (input % 2 == 0) {
+      cout << "Invalid input. Enter an odd number: ";
       cin >> input;
     }
     Zombie = input;
