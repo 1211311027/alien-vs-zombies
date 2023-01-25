@@ -8,12 +8,10 @@ Please provide the YouTube link to your [Video Demo](https://youtube.com).
 
 ## Compilation Instructions
 
-Provide instructions on how to compile your program, especially when it is non-trivial.
-
-For example:
+How to run the code?
 
 ```
-g++ main.cpp folder1\code.cpp folder2\code.cpp ......
+g++ pf/*.cpp main.cpp -o main.exe && ./main.exe
 ```
 
 ## User Manual
@@ -29,10 +27,8 @@ Please DO NOT change the Progress Log below. Leave it as it is.
 
 ## Contributors
 
-Please replace the following with your group members' names. 
+Please replace the following with your group members' names.
 
-- Tony Stark
-- Steve Rogers
-- Dr. Strange
-
-
+- Lee Rong Yi
+- Moali Douaa
+- Abdulkafi Waleed Abdulkafi Al Malami
