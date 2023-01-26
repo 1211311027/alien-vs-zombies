@@ -22,7 +22,7 @@ int Zombie = 1;
 char changeSettings;
 
 void CreateBorder() {
-
+  cout << " ";
   for (int border = 0; border < BoardColumns; border++) {
     cout << "+";
     cout << "-";
@@ -49,7 +49,7 @@ void ShowGameBoard() {
   cout << ".: Alien vs Zombie :." << endl;
   for (int row = 0; row < BoardRows; ++row) {
     CreateBorder();
-    // cout << row + 1;
+    cout << row + 1;
     for (int col = 0; col < BoardColumns; ++col) {
       cout << "|";
       std::cout << Board[row][col];
