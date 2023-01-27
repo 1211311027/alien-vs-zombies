@@ -19,6 +19,10 @@ int BoardRows = 5;
 int BoardColumns = 9;
 int Zombie = 1;
 char changeSettings;
+// Blueprint
+const int kRows = 5;
+const int kCols = 9;
+char Board[kRows][kCols];
 
 void CreateBorder() {
   cout << " ";
@@ -30,20 +34,21 @@ void CreateBorder() {
 }
 
 void CreateGameBoard() {
-  char Board[BoardRows][BoardColumns];
+
   for (int row = 0; row < BoardRows; ++row) {
     for (int col = 0; col < BoardColumns; ++col) {
       int random_number = std::rand() % 2;
-      if (random_number)
+      if (random_number) {
         Board[row][col] = '*';
-      else
+      }
+      else {
         Board[row][col] = 'r';
+      }
     }
   }
 }
 
 void ShowGameBoard() {
-  char Board[BoardRows][BoardColumns];
   int indentCol = (BoardColumns * 2 - 20) / 2;
   for (int col; col <= indentCol; col++) {
     cout << " ";
@@ -54,10 +59,10 @@ void ShowGameBoard() {
     cout << row + 1;
     for (int col = 0; col < BoardColumns; ++col) {
       cout << "|";
-      std::cout << Board[row][col];
+      cout << Board[row][col];
     }
     cout << "|";
-    std::cout << std::endl;
+    cout << endl;
   }
   CreateBorder();
 }
