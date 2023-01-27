@@ -49,8 +49,6 @@ Describe the additional features that has been implemented.
 
 List down the contribution of each group members.
 
-For example:
-
 ### Lee Rong Yi
 
 1. Generate Game Dashboard
