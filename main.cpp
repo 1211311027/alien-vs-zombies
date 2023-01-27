@@ -34,7 +34,6 @@ void CreateBorder() {
 }
 
 void CreateGameBoard() {
-
   for (int row = 0; row < BoardRows; ++row) {
     for (int col = 0; col < BoardColumns; ++col) {
       int random_number = std::rand() % 2;
@@ -67,8 +66,7 @@ void ShowGameBoard() {
   CreateBorder();
 }
 
-int main() {
-
+void GenerateGameSettings() {
   cout << "Default Game Settings" << endl;
   cout << "-----------------------" << endl;
   cout << "Board Rows    : " << BoardRows << endl;
@@ -129,7 +127,11 @@ int main() {
   } else {
     pf::ClearScreen();
   }
+}
 
+int main() {
+
+  GenerateGameSettings();
   CreateGameBoard();
   ShowGameBoard();
   pf::Pause();
