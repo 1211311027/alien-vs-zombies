@@ -45,7 +45,10 @@ void CreateGameBoard() {
 
 void ShowGameBoard() {
   char Board[BoardRows][BoardColumns];
-
+  int indentCol = (BoardColumns * 2 - 20) / 2;
+  for (int col; col <= indentCol; col++) {
+    cout << " ";
+  }
   cout << ".: Alien vs Zombie :." << endl;
   for (int row = 0; row < BoardRows; ++row) {
     CreateBorder();
