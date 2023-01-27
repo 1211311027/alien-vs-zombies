@@ -9,7 +9,6 @@
 // +601825653383
 // *********************************************************
 
-// TODO: Fill in the missing information above and delete this line.
 
 #include "pf/helper.h"
 #include <cstdlib>
