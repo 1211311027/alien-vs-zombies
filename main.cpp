@@ -64,9 +64,28 @@ void ShowGameBoard() {
     cout << endl;
   }
   CreateBorder();
+  cout << "  ";
+  for (int j = 0; j < BoardColumns; ++j)
+  { 
+      int digit = (j + 1) / 10;
+      cout << " ";
+      if (digit == 0)
+      cout << " ";
+      else 
+      cout << digit;
+  }
+  cout << endl;
+  cout << "  ";
+  for (int j= 0; j < BoardColumns; ++j)
+  {
+      cout << " " << (j + 1) % 10;
+  }
+  cout << endl;
 }
 
-void GenerateGameSettings() {
+
+int main() {
+
   cout << "Default Game Settings" << endl;
   cout << "-----------------------" << endl;
   cout << "Board Rows    : " << BoardRows << endl;
