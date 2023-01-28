@@ -9,7 +9,6 @@
 // +601825653383
 // *********************************************************
 
-// TODO: Fill in the missing information above and delete this line.
 
 #include "pf/helper.h"
 #include <cstdlib>
@@ -35,7 +34,6 @@ void CreateBorder() {
 }
 
 void CreateGameBoard() {
-
   for (int row = 0; row < BoardRows; ++row) {
     for (int col = 0; col < BoardColumns; ++col) {
       int random_number = std::rand() % 2;
@@ -148,7 +146,11 @@ int main() {
   } else {
     pf::ClearScreen();
   }
+}
 
+int main() {
+
+  GenerateGameSettings();
   CreateGameBoard();
   ShowGameBoard();
   pf::Pause();
