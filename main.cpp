@@ -9,7 +9,6 @@
 // +601825653383
 // *********************************************************
 
-
 #include "pf/helper.h"
 #include <cstdlib>
 #include <iostream>
@@ -39,8 +38,7 @@ void CreateGameBoard() {
       int random_number = std::rand() % 2;
       if (random_number) {
         Board[row][col] = '*';
-      }
-      else {
+      } else {
         Board[row][col] = 'r';
       }
     }
@@ -65,27 +63,23 @@ void ShowGameBoard() {
   }
   CreateBorder();
   cout << "  ";
-  for (int j = 0; j < BoardColumns; ++j)
-  { 
-      int digit = (j + 1) / 10;
+  for (int j = 0; j < BoardColumns; ++j) {
+    int digit = (j + 1) / 10;
+    cout << " ";
+    if (digit == 0)
       cout << " ";
-      if (digit == 0)
-      cout << " ";
-      else 
+    else
       cout << digit;
   }
   cout << endl;
   cout << "  ";
-  for (int j= 0; j < BoardColumns; ++j)
-  {
-      cout << " " << (j + 1) % 10;
+  for (int j = 0; j < BoardColumns; ++j) {
+    cout << " " << (j + 1) % 10;
   }
   cout << endl;
 }
 
-
-int main() {
-
+void GenerateGameSettings() {
   cout << "Default Game Settings" << endl;
   cout << "-----------------------" << endl;
   cout << "Board Rows    : " << BoardRows << endl;
