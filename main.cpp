@@ -20,59 +20,73 @@ int BoardRows = 5;
 int BoardColumns = 9;
 int Zombie = 1;
 char changeSettings;
-const int ROWS = 5; // board dimensions must be odd
-const int COLS = 9;
-char board[ROWS][COLS]; // game board
+// Blueprint
+const int kRows = 5;
+const int kCols = 9;
+char Board[kRows][kCols];
 
-void CreateBorder()
-{
-
-  for (int border = 0; border < BoardColumns; border++)
-  {
+void CreateBorder() {
+  cout << " ";
+  for (int border = 0; border < BoardColumns; border++) {
     cout << "+";
     cout << "-";
   }
   cout << "+" << endl;
 }
 
-void CreateGameBoard()
-{
-  char Board[BoardRows][BoardColumns];
-  for (int row = 0; row < BoardRows; ++row)
-  {
-    for (int col = 0; col < BoardColumns; ++col)
-    {
+void CreateGameBoard() {
+
+  for (int row = 0; row < BoardRows; ++row) {
+    for (int col = 0; col < BoardColumns; ++col) {
       int random_number = std::rand() % 2;
-      if (random_number)
+      if (random_number) {
         Board[row][col] = '*';
-      else
+      }
+      else {
         Board[row][col] = 'r';
+      }
     }
   }
 }
 
-void ShowGameBoard()
-{
-  char Board[BoardRows][BoardColumns];
-
+void ShowGameBoard() {
+  int indentCol = (BoardColumns * 2 - 20) / 2;
+  for (int col; col <= indentCol; col++) {
+    cout << " ";
+  }
   cout << ".: Alien vs Zombie :." << endl;
-  for (int row = 0; row < BoardRows; ++row)
-  {
+  for (int row = 0; row < BoardRows; ++row) {
     CreateBorder();
-     cout << row + 1;
-    for (int col = 0; col < BoardColumns; ++col)
-    {
+    cout << row + 1;
+    for (int col = 0; col < BoardColumns; ++col) {
       cout << "|";
-      std::cout << Board[row][col];
+      cout << Board[row][col];
     }
     cout << "|";
-    std::cout << std::endl;
+    cout << endl;
   }
   CreateBorder();
+  cout << "  ";
+  for (int j = 0; j < BoardColumns; ++j)
+  { 
+      int digit = (j + 1) / 10;
+      cout << " ";
+      if (digit == 0)
+      cout << " ";
+      else 
+      cout << digit;
+  }
+  cout << endl;
+  cout << "  ";
+  for (int j= 0; j < BoardColumns; ++j)
+  {
+      cout << " " << (j + 1) % 10;
+  }
+  cout << endl;
 }
 
-int main()
-{
+
+int main() {
 
   cout << "Default Game Settings" << endl;
   cout << "-----------------------" << endl;
@@ -83,31 +97,27 @@ int main()
   cout << "Do you wish to change the game default settings (y/n)? => ";
   cin >> changeSettings;
 
-  if (toupper(changeSettings) == 'Y')
-  {
+  if (toupper(changeSettings) == 'Y') {
     pf::ClearScreen();
     int input;
     cout << "Board Settings" << endl;
     cout << "----------------" << endl;
     cout << "Enter rows => ";
     cin >> input;
-    while (cin.fail())
-    {
+    while (cin.fail()) {
       cout << "Invalid input. Enter a number: ";
       cin.clear();
       cin.ignore(256, '\n');
       cin >> input;
     }
-    while (input % 2 == 0)
-    {
+    while (input % 2 == 0) {
       cout << "Invalid input. Enter an odd number: ";
       cin >> input;
     }
     BoardRows = input;
     cout << "Enter Columns: ";
     cin >> input;
-    while (cin.fail())
-    {
+    while (cin.fail()) {
       cout << "Invalid input. Enter a number: ";
       cin.clear();
       cin.ignore(256, '\n');
@@ -119,15 +129,13 @@ int main()
     cout << "-----------------" << endl;
     cout << "Enter number of zombies => ";
     cin >> input;
-    while (cin.fail())
-    {
+    while (cin.fail()) {
       cout << "Invalid input. Enter a number: ";
       cin.clear();
       cin.ignore(256, '\n');
       cin >> input;
     }
-    while (input % 2 == 0)
-    {
+    while (input % 2 == 0) {
       cout << "Invalid input. Enter an odd number: ";
       cin >> input;
     }
@@ -137,9 +145,7 @@ int main()
     pf::Pause();
     cin.get();
     pf::ClearScreen();
-  }
-  else
-  {
+  } else {
     pf::ClearScreen();
   }
 
