@@ -33,6 +33,8 @@ void CreateBorder() {
 }
 
 void CreateGameBoard() {
+  int centerRow = BoardRows / 2;
+int centerCol = BoardColumns / 2;
   for (int row = 0; row < BoardRows; ++row) {
     for (int col = 0; col < BoardColumns; ++col) {
       int random_number = std::rand() % 2;
@@ -40,6 +42,9 @@ void CreateGameBoard() {
         Board[row][col] = '*';
       } else {
         Board[row][col] = 'r';
+      }
+      if (row == centerRow && col == centerCol) {  //Alien to placed at the center of the board
+Board[row][col] = 'A';
       }
     }
   }
