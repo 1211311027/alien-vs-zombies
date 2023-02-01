@@ -12,12 +12,12 @@ All the features completed.
 
 1. Customize Game Settings (kafi)
 2. Game Dashboard (rony)
+3. Game Characters (Attributes) (douaa)
 
 ### To Do
 
 All the features not yet done.
 
-3. Game Characters (Attributes) (douaa)
 4. Board Dimensions (kafi)
 5. Zombies in Board (rony)
 6. Game Objects (douaa)
@@ -59,7 +59,8 @@ List down the contribution of each group members.
 
 ### Moali Douaa
 
+1. Game Characters (Attributes)
+
 ## Problems Encountered & Solutions
 
 Describe the problems encountered and provide the solutions / plan for the solutions.
-
