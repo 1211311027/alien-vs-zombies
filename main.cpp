@@ -10,12 +10,14 @@
 // *********************************************************
 
 #include "pf/helper.h"
+#include <cctype>
 #include <cstdlib>
+#include <ctime>
 #include <iostream>
 using namespace std;
 
-int BoardRows = 5;
-int BoardColumns = 9;
+int BoardRows;
+int BoardColumns;
 int Zombie = 1;
 char changeSettings;
 // Blueprint
@@ -23,67 +25,13 @@ const int kRows = 5;
 const int kCols = 9;
 char Board[kRows][kCols];
 
-void CreateBorder() {
-  cout << " ";
-  for (int border = 0; border < BoardColumns; border++) {
-    cout << "+";
-    cout << "-";
-  }
-  cout << "+" << endl;
-}
-
-void CreateGameBoard() {
-  for (int row = 0; row < BoardRows; ++row) {
-    for (int col = 0; col < BoardColumns; ++col) {
-      int random_number = std::rand() % 2;
-      if (random_number) {
-        Board[row][col] = '*';
-      } else {
-        Board[row][col] = 'r';
-      }
-    }
-  }
-}
-
-void ShowGameBoard() {
-  int indentCol = (BoardColumns * 2 - 20) / 2;
-  for (int col; col <= indentCol; col++) {
-    cout << " ";
-  }
-  cout << ".: Alien vs Zombie :." << endl;
-  for (int row = 0; row < BoardRows; ++row) {
-    CreateBorder();
-    cout << row + 1;
-    for (int col = 0; col < BoardColumns; ++col) {
-      cout << "|";
-      cout << Board[row][col];
-    }
-    cout << "|";
-    cout << endl;
-  }
-  CreateBorder();
-  cout << "  ";
-  for (int j = 0; j < BoardColumns; ++j) {
-    int digit = (j + 1) / 10;
-    cout << " ";
-    if (digit == 0)
-      cout << " ";
-    else
-      cout << digit;
-  }
-  cout << endl;
-  cout << "  ";
-  for (int j = 0; j < BoardColumns; ++j) {
-    cout << " " << (j + 1) % 10;
-  }
-  cout << endl;
-}
-
 void GenerateGameSettings() {
+  string acceptedStrings[2] = {"y", "n"};
+
   cout << "Default Game Settings" << endl;
   cout << "-----------------------" << endl;
-  cout << "Board Rows    : " << BoardRows << endl;
-  cout << "Board Columns : " << BoardColumns << endl;
+  cout << "Board Rows    : " << kRows << endl;
+  cout << "Board Columns : " << kCols << endl;
   cout << "Zombie Count  : " << Zombie << endl;
   cout << endl;
   cout << "Do you wish to change the game default settings (y/n)? => ";
@@ -138,8 +86,78 @@ void GenerateGameSettings() {
     cin.get();
     pf::ClearScreen();
   } else {
+    BoardRows = kRows;
+    BoardColumns = kCols;
     pf::ClearScreen();
   }
+}
+
+void indentSpace() {
+  for (int spc; spc < 3; spc++)
+    cout << " ";
+}
+
+void CreateBorder() {
+  indentSpace();
+  cout << " ";
+  for (int border = 0; border < BoardColumns; border++) {
+    cout << "+";
+    cout << "-";
+  }
+  cout << "+" << endl;
+}
+
+void CreateGameBoard() {
+  for (int row = 0; row < BoardRows; ++row) {
+    for (int col = 0; col < BoardColumns; ++col) {
+      int random_number = std::rand() % 2;
+      if (random_number) {
+        Board[row][col] = '*';
+      } else {
+        Board[row][col] = 'r';
+      }
+    }
+  }
+}
+
+void ShowGameBoard() {
+  int a = BoardRows / 2;
+  int b = BoardColumns / 2;
+  if (BoardColumns > 10) {
+    for (int col = 0; col < (BoardColumns * 2 - 20) / 2 + 1; col++) {
+      cout << " ";
+    }
+  }
+  cout << ".: Alien vs Zombie :." << endl;
+  for (int row = 0; row < BoardRows; ++row) {
+    CreateBorder();
+    cout << row + 1;
+    for (int col = 0; col < BoardColumns; ++col) {
+      cout << "|";
+      if (row == a && col == b) {
+        Board[row][col] = 'A';
+      }
+      cout << Board[row][col];
+    }
+    cout << "|";
+    cout << endl;
+  }
+  CreateBorder();
+  cout << "  ";
+  for (int j = 0; j < BoardColumns; ++j) {
+    int digit = (j + 1) / 10;
+    cout << " ";
+    if (digit == 0)
+      cout << " ";
+    else
+      cout << digit;
+  }
+  cout << endl;
+  cout << "  ";
+  for (int j = 0; j < BoardColumns; ++j) {
+    cout << " " << (j + 1) % 10;
+  }
+  cout << endl;
 }
 
 int main() {
