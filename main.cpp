@@ -6,7 +6,7 @@
 // IDs: 1211311027 | 1201102665 | 1211307919
 // Emails: 1211311027@student.mmu.edu.my | 1201102665@student.mmu.edu.my |
 // 1211307919@student.mmu.edu.my Phones: +60102736440 | +60183211296 |
-// +601825653383
+// +60182565383
 // *********************************************************
 
 #include "pf/helper.h"
@@ -92,13 +92,7 @@ void GenerateGameSettings() {
   }
 }
 
-void indentSpace() {
-  for (int spc; spc < 3; spc++)
-    cout << " ";
-}
-
 void CreateBorder() {
-  indentSpace();
   cout << " ";
   for (int border = 0; border < BoardColumns; border++) {
     cout << "+";
@@ -158,6 +152,42 @@ void ShowGameBoard() {
     cout << " " << (j + 1) % 10;
   }
   cout << endl;
+  cout << endl;
+}
+
+class Character {
+public:
+  int life;
+  int attack;
+
+  Character() {
+    life = rand() % 10 + 1;
+    attack = rand() % life;
+  }
+};
+
+class Alien : public Character {
+public:
+  Alien() { attack = 0; }
+};
+
+class Zombie : public Character {
+public:
+  int range;
+
+  Zombie() { range = rand() % 10 + 1; }
+};
+
+void ShowGameCharacters() {
+  srand(time(0));
+
+  Alien a;
+  class Zombie z;
+
+  cout << "-> Alien: life = " << a.life << ", attack = " << a.attack
+       << std::endl;
+  cout << "   Zombie: life = " << z.life << ", attack = " << z.attack
+       << ", range = " << z.range << std::endl;
 }
 
 int main() {
@@ -165,6 +195,7 @@ int main() {
   GenerateGameSettings();
   CreateGameBoard();
   ShowGameBoard();
+  ShowGameCharacters();
   pf::Pause();
 
   return 0;
