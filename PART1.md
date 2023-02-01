@@ -10,7 +10,7 @@ Please provide the YouTube link to your [Video Demo](https://youtube.com).
 
 All the features completed.
 
-1. Customize Game Settings (kafi)
+1. Customize Game Settings (Abdulkafi)
 2. Game Dashboard (rony)
 
 ### To Do
@@ -18,25 +18,25 @@ All the features completed.
 All the features not yet done.
 
 3. Game Characters (Attributes) (douaa)
-4. Board Dimensions (kafi)
+4. Board Dimensions (Abdulkafi)
 5. Zombies in Board (rony)
 6. Game Objects (douaa)
-7. Alien Movement (kafi)
+7. Alien Movement (Abdulkafi)
 8. Game Commands (rony)
 9. Character's Turns (douaa)
-10. Health Object (kafi)
+10. Health Object (Abdulkafi)
 11. Board border & Trail Reset (rony)
 12. Zombie's Movement & Attack (douaa)
-13. Rock Object (kafi)
+13. Rock Object (Abdulkafi)
 14. Zombie Attacks Alien (rony)
 15. Pod Object (douaa)
-16. Alien Accumulate Attacks (kafi)
+16. Alien Accumulate Attacks (Abdulkafi)
 17. Arrow Object (rony)
 18. Alien hits Zombie (douaa)
-19. Trail Reset (kafi)
+19. Trail Reset (Abdulkafi)
 20. Alien kills Zombie and Win (rony)
 21. Play Again? (douaa)
-22. Combo Attack (kafi)
+22. Combo Attack (Abdulkafi)
 23. Save Game (rony)
 24. Quit Game (douaa)
 25. Load Game (rony)

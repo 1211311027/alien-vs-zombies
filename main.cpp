@@ -43,7 +43,7 @@ int centerCol = BoardColumns / 2;
       } else {
         Board[row][col] = 'r';
       }
-      if (row == centerRow && col == centerCol) {  //Alien to placed at the center of the board
+      if (row == centerRow && col == centerCol) {  //Alien to be placed at the center of the board
 Board[row][col] = 'A';
       }
     }
