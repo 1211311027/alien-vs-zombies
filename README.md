@@ -2,9 +2,19 @@
 
 Command-line Program of a simple game inspired by 'Alien Path'.
 
-You may add one signature screenshot of your program here or above the title. Check out [this tutorial](https://www.digitalocean.com/community/tutorials/markdown-markdown-images) to learn how to do it.
+Game Settings
 
-Please provide the YouTube link to your [Video Demo](https://youtube.com).
+<p align="center">
+<img width="500px" height="auto" src="./.github/game-settings.jpg">
+</p>
+
+Game Dashboard
+
+<p align="center">
+<img width="500px" height="auto" src="./.github/game-dashboard.jpg">
+</p>
+
+YouTube link: [Video Demo](https://youtu.be/W62QIoYPHCs).
 
 ## Compilation Instructions
 

@@ -63,6 +63,10 @@ void GenerateGameSettings() {
       cin.ignore(256, '\n');
       cin >> input;
     }
+    while (input % 2 == 0) {
+      cout << "Invalid input. Enter an odd number: ";
+      cin >> input;
+    }
     BoardColumns = input;
     cout << endl;
     cout << "Zombie Settings" << endl;
