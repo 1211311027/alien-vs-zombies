@@ -19,7 +19,7 @@ using namespace std;
 // Global scope variables
 int BoardRows;
 int BoardColumns;
-int Zombies = 1;
+int ZombieCount = 1;
 char changeSettings;
 // Blueprint
 // To be replaced when i figure out how to pass variables to helper.cpp
@@ -62,7 +62,7 @@ void GenerateGameSettings() {
   cout << "-----------------------" << endl;
   cout << "Board Rows    : " << kRows << endl;
   cout << "Board Columns : " << kCols << endl;
-  cout << "Zombie Count  : " << Zombies << endl;
+  cout << "Zombie Count  : " << ZombieCount << endl;
   cout << endl;
   cout << "Do you wish to change the game default settings (y/n)? => ";
   cin >> changeSettings;
@@ -127,7 +127,7 @@ void GenerateGameSettings() {
       cin >> input;
     }
     // Set new zombie counts
-    Zombies = input;
+    ZombieCount = input;
     cout << endl;
     // Exit Game Settings config
     cout << "Settings Updated." << endl;
@@ -147,6 +147,14 @@ void GenerateGameSettings() {
 // r**r*r**r
 // r*rr*rrr*
 void CreateGameBoard() {
+
+  // ^ - up
+  // v - down
+  // < - left
+  // > - right
+  // h - health
+  // p - pod
+  // r - rock
   wchar_t gameObj[6] = {' ', 'h', 'p', 'r'};
   for (int row = 0; row < BoardRows; ++row) {
     for (int col = 0; col < BoardColumns; ++col) {
@@ -228,12 +236,14 @@ void ShowGameCharacters() {
   srand(time(0));
 
   Alien a;
-  class Zombie z;
+  Zombie z;
 
   cout << "-> Alien: life = " << a.life << ", attack = " << a.attack
        << std::endl;
-  cout << "   Zombie: life = " << z.life << ", attack = " << z.attack
-       << ", range = " << z.range << std::endl;
+  for (int i = 0; i < ZombieCount; i++) {
+    printf("   Zombie %i : life = %i, attack = %i, range = %i\n", i + 1, z.life,
+           z.attack, z.range);
+  }
 }
 
 int main() {
