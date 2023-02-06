@@ -33,24 +33,26 @@ class Character {
 public:
   int life;
   int attack;
-
-  Character() {
-    life = rand() % 10 + 1;
-    attack = rand() % life;
-  }
+  int range;
 };
 
 // Player
 class Alien : public Character {
 public:
-  Alien() { attack = 0; }
+  Alien() {
+    life = 100;
+    attack = 0;
+  }
 };
 // Zombie
 class Zombie : public Character {
 public:
-  int range;
-
-  Zombie() { range = rand() % 10 + 1; }
+  Zombie() { // problem: multiple zombies share the same attributes
+    srand(time(0));
+    life = (rand() % 5 + 1) * 50;
+    attack = (rand() % 3 + 1) * 5;
+    range = rand() % 10 + 1;
+  }
 };
 
 // Game Objects
