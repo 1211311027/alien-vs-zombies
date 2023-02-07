@@ -135,8 +135,10 @@ void GenerateGameSettings() {
       cin >> input;
     }
     // Check if input is even
-    while (input % 2 == 0) {
-      cout << "Invalid input. Enter an odd number: ";
+    while (input == 0 || input > 9) {
+      cout << "Invalid input. Number of zombies must be between 1 to 9."
+           << endl;
+      cout << "Enter number of zombies => ";
       cin >> input;
     }
     // Set new zombie counts
