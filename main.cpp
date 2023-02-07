@@ -33,25 +33,41 @@ class Character {
 public:
   int life;
   int attack;
-
-  Character() {
-    life = rand() % 10 + 1;
-    attack = rand() % life;
-  }
+  int range;
 };
 
 // Player
 class Alien : public Character {
 public:
-  Alien() { attack = 0; }
+  Alien() {
+    life = 100;
+    attack = 0;
+  }
 };
 // Zombie
 class Zombie : public Character {
 public:
-  int range;
-
-  Zombie() { range = rand() % 10 + 1; }
+  Zombie() { // problem: multiple zombies share the same attributes
+    srand(time(0));
+    life = (rand() % 5 + 1) * 50;
+    attack = (rand() % 3 + 1) * 5;
+    range = rand() % 10 + 1;
+  }
 };
+
+// Game Objects
+struct gameObj {
+  string space;
+  wchar_t up;
+  wchar_t down;
+  wchar_t left;
+  wchar_t right;
+  wchar_t health;
+  wchar_t pod;
+  wchar_t rock;
+};
+gameObj gameObj = {" ", '^', 'v', '<', '>', 'h', 'p', 'r'};
+// access it with gameObj.health for example, to replace objects in board
 
 // Game Settings
 void GenerateGameSettings() {
@@ -147,7 +163,7 @@ void GenerateGameSettings() {
 // r**r*r**r
 // r*rr*rrr*
 void CreateGameBoard() {
-
+  srand(time(0));
   // ^ - up
   // v - down
   // < - left
@@ -155,15 +171,11 @@ void CreateGameBoard() {
   // h - health
   // p - pod
   // r - rock
-  wchar_t gameObj[6] = {' ', 'h', 'p', 'r'};
+  char gameObj[8] = {' ', '^', 'v', '<', '>', 'h', 'p', 'r'};
   for (int row = 0; row < BoardRows; ++row) {
     for (int col = 0; col < BoardColumns; ++col) {
-      int random_number = std::rand() % 2;
-      if (random_number) {
-        Board[row][col] = ' ';
-      } else {
-        Board[row][col] = 'r';
-      }
+      int random_number = rand() % 7;
+      Board[row][col] = gameObj[random_number];
     }
   }
 }
