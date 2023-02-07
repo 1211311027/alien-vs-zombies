@@ -5,8 +5,8 @@
 // Names: LEE RONG YI | ABDULKAFI WALEED ABDULKAFI AL MALAMI | MOALI DOUAA
 // IDs: 1211311027 | 1201102665 | 1211307919
 // Emails: 1211311027@student.mmu.edu.my | 1201102665@student.mmu.edu.my |
-// 1211307919@student.mmu.edu.my Phones: +60102736440 | +60183211296 |
-// +60182565383
+// 1211307919@student.mmu.edu.my
+// Phones: +60102736440 | +60183211296 | +60182565383
 // *********************************************************
 
 #include "pf/helper.h"
