@@ -13,12 +13,12 @@ All the features completed.
 1. Customize Game Settings (kafi)
 2. Game Dashboard (rony)
 3. Game Characters (Attributes) (douaa)
+4. Board Dimensions (kafi)
 
 ### To Do
 
 All the features not yet done.
 
-4. Board Dimensions (kafi)
 5. Zombies in Board (rony)
 6. Game Objects (douaa)
 7. Alien Movement (kafi)

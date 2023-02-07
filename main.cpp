@@ -14,18 +14,15 @@
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
+#include <vector>
 using namespace std;
 
 // Global scope variables
-int BoardRows;
-int BoardColumns;
+int BoardRows = 5;
+int BoardColumns = 9;
 int ZombieCount = 1;
 char changeSettings;
-// Blueprint
-// To be replaced when i figure out how to pass variables to helper.cpp
-const int kRows = 5;
-const int kCols = 9;
-char Board[kRows][kCols];
+vector<vector<char>> imaginaryBoard;
 
 // Game Characters
 // All Character
@@ -76,9 +73,9 @@ void GenerateGameSettings() {
   // Game Start UI
   cout << "Default Game Settings" << endl;
   cout << "-----------------------" << endl;
-  cout << "Board Rows    : " << kRows << endl;
-  cout << "Board Columns : " << kCols << endl;
-  cout << "Zombie Count  : " << ZombieCount << endl;
+  cout << "Board Rows    : 5" << endl;
+  cout << "Board Columns : 9" << endl;
+  cout << "Zombie Count  : 1" << endl;
   cout << endl;
   cout << "Do you wish to change the game default settings (y/n)? => ";
   cin >> changeSettings;
@@ -151,19 +148,23 @@ void GenerateGameSettings() {
     cin.get();
     pf::ClearScreen();
   } else {
-    // Set board rows and columns to default settings
-    BoardRows = kRows;
-    BoardColumns = kCols;
+    // Clear screen and use default settings
     pf::ClearScreen();
   }
 }
 
 // Creates an imaginary game board, for example
 // **r*r*rr*
-// r**r*r**r
+// r**rAr**r
 // r*rr*rrr*
+// uncomment line 180, 183, 186 to visualize imaginaryBoard
 void CreateGameBoard() {
+  imaginaryBoard.resize(BoardRows);
   srand(time(0));
+  // Initialize a and b to calculate center of board to place Alien
+  int a = BoardRows / 2;
+  int b = BoardColumns / 2;
+
   // ^ - up
   // v - down
   // < - left
@@ -174,9 +175,17 @@ void CreateGameBoard() {
   char gameObj[8] = {' ', '^', 'v', '<', '>', 'h', 'p', 'r'};
   for (int row = 0; row < BoardRows; ++row) {
     for (int col = 0; col < BoardColumns; ++col) {
+      imaginaryBoard[row].resize(BoardColumns);
       int random_number = rand() % 7;
-      Board[row][col] = gameObj[random_number];
+      if (row == a && col == b) {
+        imaginaryBoard[row][col] = 'A';
+        // cout << imaginaryBoard[row][col];
+      } else {
+        imaginaryBoard[row][col] = gameObj[random_number];
+        // cout << imaginaryBoard[row][col];
+      }
     }
+    // cout << endl;
   }
 }
 
@@ -195,11 +204,8 @@ void CreateBorder() {
 
 // Show game board with indentations and borders
 void ShowGameBoard() {
-  // Initialize a and b to calculate center of board to place Alien
-  int a = BoardRows / 2;
-  int b = BoardColumns / 2;
-  // When imaginary board column is more than 10, Indent spaces at left side of
-  // game title
+  // When imaginary board column is more than 10,
+  // Indent spaces at left side of game title
   if (BoardColumns > 10) {
     for (int col = 0; col < (BoardColumns * 2 - 20) / 2 + 1; col++) {
       cout << " ";
@@ -212,10 +218,7 @@ void ShowGameBoard() {
     printf(" %i ", row + 1);
     for (int col = 0; col < BoardColumns; ++col) {
       cout << "|";
-      if (row == a && col == b) {
-        Board[row][col] = 'A';
-      }
-      cout << Board[row][col];
+      cout << imaginaryBoard[row][col];
     }
     cout << "|";
     cout << endl;
@@ -245,7 +248,7 @@ void ShowGameBoard() {
 
 // Show game character attributes below game board
 void ShowGameCharacters() {
-  srand(time(0));
+  srand(time(NULL));
 
   Alien a;
   Zombie z;
@@ -253,6 +256,9 @@ void ShowGameCharacters() {
   cout << "-> Alien: life = " << a.life << ", attack = " << a.attack
        << std::endl;
   for (int i = 0; i < ZombieCount; i++) {
+    a.life = (rand() % 5 + 1) * 50;
+    a.attack = (rand() % 3 + 1) * 5;
+    a.range = rand() % 10 + 1;
     printf("   Zombie %i : life = %i, attack = %i, range = %i\n", i + 1, z.life,
            z.attack, z.range);
   }
