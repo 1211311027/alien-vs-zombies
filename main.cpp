@@ -54,16 +54,16 @@ public:
 
 // Game Objects
 struct gameObj {
-  string space;
-  wchar_t up;
-  wchar_t down;
-  wchar_t left;
-  wchar_t right;
-  wchar_t health;
-  wchar_t pod;
-  wchar_t rock;
+  char space;
+  char up;
+  char down;
+  char left;
+  char right;
+  char health;
+  char pod;
+  char rock;
 };
-gameObj gameObj = {" ", '^', 'v', '<', '>', 'h', 'p', 'r'};
+gameObj gameObj = {' ', '^', 'v', '<', '>', 'h', 'p', 'r'};
 // access it with gameObj.health for example, to replace objects in board
 
 // Game Settings
