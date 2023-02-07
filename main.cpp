@@ -162,8 +162,8 @@ void CreateGameBoard() {
   imaginaryBoard.resize(BoardRows);
   srand(time(0));
   // Initialize a and b to calculate center of board to place Alien
-  int a = BoardRows / 2;
-  int b = BoardColumns / 2;
+  int centerRow = BoardRows / 2;
+  int centerColumn = BoardColumns / 2;
 
   // ^ - up
   // v - down
@@ -177,7 +177,7 @@ void CreateGameBoard() {
     for (int col = 0; col < BoardColumns; ++col) {
       imaginaryBoard[row].resize(BoardColumns);
       int random_number = rand() % 7;
-      if (row == a && col == b) {
+      if (row == centerRow && col == centerColumn) {
         imaginaryBoard[row][col] = 'A';
         // cout << imaginaryBoard[row][col];
       } else {
