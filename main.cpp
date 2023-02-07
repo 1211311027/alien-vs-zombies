@@ -45,10 +45,10 @@ public:
 class Zombie : public Character {
 public:
   Zombie() { // problem: multiple zombies share the same attributes
-    srand(time(0));
+    // srand(time(0));
     life = (rand() % 5 + 1) * 50;
     attack = (rand() % 3 + 1) * 5;
-    range = rand() % 10 + 1;
+    range = rand() % 3 + 1;
   }
 };
 
@@ -159,9 +159,10 @@ void GenerateGameSettings() {
 // r*rr*rrr*
 // uncomment line 180, 183, 186 to visualize imaginaryBoard
 void CreateGameBoard() {
-  imaginaryBoard.resize(BoardRows);
+  // Randomize seed
   srand(time(0));
-  // Initialize a and b to calculate center of board to place Alien
+  // Initialize centerRow and centerColumn to calculate center of board to place
+  // Alien
   int centerRow = BoardRows / 2;
   int centerColumn = BoardColumns / 2;
 
@@ -173,6 +174,8 @@ void CreateGameBoard() {
   // p - pod
   // r - rock
   char gameObj[8] = {' ', '^', 'v', '<', '>', 'h', 'p', 'r'};
+  // Generate Real Game Board
+  imaginaryBoard.resize(BoardRows);
   for (int row = 0; row < BoardRows; ++row) {
     for (int col = 0; col < BoardColumns; ++col) {
       imaginaryBoard[row].resize(BoardColumns);
@@ -248,7 +251,7 @@ void ShowGameBoard() {
 
 // Show game character attributes below game board
 void ShowGameCharacters() {
-  srand(time(NULL));
+  // srand(time(0));
 
   Alien alien;
   Zombie zombie;
@@ -256,9 +259,10 @@ void ShowGameCharacters() {
   cout << "-> Alien: life = " << alien.life << ", attack = " << alien.attack
        << std::endl;
   for (int i = 0; i < ZombieCount; i++) {
-    alien.life = (rand() % 5 + 1) * 50;
-    alien.attack = (rand() % 3 + 1) * 5;
-    alien.range = rand() % 10 + 1;
+    // problem: multiple zombies share the same attributes
+    // alien.life = (rand() % 5 + 1) * 50;
+    // alien.attack = (rand() % 3 + 1) * 5;
+    // alien.range = rand() % 10 + 1;
     printf("   Zombie %i : life = %i, attack = %i, range = %i\n", i + 1,
            zombie.life, zombie.attack, zombie.range);
   }
