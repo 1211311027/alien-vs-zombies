@@ -250,17 +250,17 @@ void ShowGameBoard() {
 void ShowGameCharacters() {
   srand(time(NULL));
 
-  Alien a;
-  Zombie z;
+  Alien alien;
+  Zombie zombie;
 
-  cout << "-> Alien: life = " << a.life << ", attack = " << a.attack
+  cout << "-> Alien: life = " << alien.life << ", attack = " << alien.attack
        << std::endl;
   for (int i = 0; i < ZombieCount; i++) {
-    a.life = (rand() % 5 + 1) * 50;
-    a.attack = (rand() % 3 + 1) * 5;
-    a.range = rand() % 10 + 1;
-    printf("   Zombie %i : life = %i, attack = %i, range = %i\n", i + 1, z.life,
-           z.attack, z.range);
+    alien.life = (rand() % 5 + 1) * 50;
+    alien.attack = (rand() % 3 + 1) * 5;
+    alien.range = rand() % 10 + 1;
+    printf("   Zombie %i : life = %i, attack = %i, range = %i\n", i + 1,
+           zombie.life, zombie.attack, zombie.range);
   }
 }
 
