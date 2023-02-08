@@ -10,9 +10,6 @@
 // *********************************************************
 
 #include "pf/helper.h"
-#include <cctype>
-#include <cstdlib>
-#include <ctime>
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -44,8 +41,8 @@ public:
 // Zombie
 class Zombie : public Character {
 public:
-  Zombie() { // problem: multiple zombies share the same attributes
-    // srand(time(0));
+  Zombie() { // problem: multiple zombies still share the same attributes
+    srand(time(0));
     life = (rand() % 5 + 1) * 50;
     attack = (rand() % 3 + 1) * 5;
     range = rand() % 3 + 1;
@@ -73,9 +70,9 @@ void GenerateGameSettings() {
   // Game Start UI
   cout << "Default Game Settings" << endl;
   cout << "-----------------------" << endl;
-  cout << "Board Rows    : 5" << endl;
-  cout << "Board Columns : 9" << endl;
-  cout << "Zombie Count  : 1" << endl;
+  cout << "Board Rows    : " << BoardRows << endl;
+  cout << "Board Columns : " << BoardColumns << endl;
+  cout << "Zombie Count  : " << ZombieCount << endl;
   cout << endl;
   cout << "Do you wish to change the game default settings (y/n)? => ";
   cin >> changeSettings;
@@ -162,7 +159,7 @@ void GenerateGameSettings() {
 // uncomment line 180, 183, 186 to visualize imaginaryBoard
 void CreateGameBoard() {
   // Randomize seed
-  srand(time(0));
+  // srand(time(0));
   // Initialize centerRow and centerColumn to calculate center of board to place
   // Alien
   int centerRow = BoardRows / 2;
@@ -216,7 +213,7 @@ void ShowGameBoard() {
       cout << " ";
     }
   }
-  cout << " .: Alien vs Zombie :. " << endl;
+  cout << "  .: Alien vs Zombie :." << endl;
   // Generate real game board
   for (int row = 0; row < BoardRows; ++row) {
     CreateBorder();
