@@ -5,8 +5,8 @@
 // Names: LEE RONG YI | ABDULKAFI WALEED ABDULKAFI AL MALAMI | MOALI DOUAA
 // IDs: 1211311027 | 1201102665 | 1211307919
 // Emails: 1211311027@student.mmu.edu.my | 1201102665@student.mmu.edu.my |
-// 1211307919@student.mmu.edu.my Phones: +60102736440 | +60183211296 |
-// +60182565383
+// 1211307919@student.mmu.edu.my
+// Phones: +60102736440 | +60183211296 | +60182565383
 // *********************************************************
 
 #include "pf/helper.h"
@@ -14,18 +14,15 @@
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
+#include <vector>
 using namespace std;
 
 // Global scope variables
-int BoardRows;
-int BoardColumns;
+int BoardRows = 5;
+int BoardColumns = 9;
 int ZombieCount = 1;
 char changeSettings;
-// Blueprint
-// To be replaced when i figure out how to pass variables to helper.cpp
-const int kRows = 5;
-const int kCols = 9;
-char Board[kRows][kCols];
+vector<vector<char>> imaginaryBoard;
 
 // Game Characters
 // All Character
@@ -48,25 +45,25 @@ public:
 class Zombie : public Character {
 public:
   Zombie() { // problem: multiple zombies share the same attributes
-    srand(time(0));
+    // srand(time(0));
     life = (rand() % 5 + 1) * 50;
     attack = (rand() % 3 + 1) * 5;
-    range = rand() % 10 + 1;
+    range = rand() % 3 + 1;
   }
 };
 
 // Game Objects
 struct gameObj {
-  string space;
-  wchar_t up;
-  wchar_t down;
-  wchar_t left;
-  wchar_t right;
-  wchar_t health;
-  wchar_t pod;
-  wchar_t rock;
+  char space;
+  char up;
+  char down;
+  char left;
+  char right;
+  char health;
+  char pod;
+  char rock;
 };
-gameObj gameObj = {" ", '^', 'v', '<', '>', 'h', 'p', 'r'};
+gameObj gameObj = {' ', '^', 'v', '<', '>', 'h', 'p', 'r'};
 // access it with gameObj.health for example, to replace objects in board
 
 // Game Settings
@@ -76,9 +73,9 @@ void GenerateGameSettings() {
   // Game Start UI
   cout << "Default Game Settings" << endl;
   cout << "-----------------------" << endl;
-  cout << "Board Rows    : " << kRows << endl;
-  cout << "Board Columns : " << kCols << endl;
-  cout << "Zombie Count  : " << ZombieCount << endl;
+  cout << "Board Rows    : 5" << endl;
+  cout << "Board Columns : 9" << endl;
+  cout << "Zombie Count  : 1" << endl;
   cout << endl;
   cout << "Do you wish to change the game default settings (y/n)? => ";
   cin >> changeSettings;
@@ -138,8 +135,10 @@ void GenerateGameSettings() {
       cin >> input;
     }
     // Check if input is even
-    while (input % 2 == 0) {
-      cout << "Invalid input. Enter an odd number: ";
+    while (input == 0 || input > 9) {
+      cout << "Invalid input. Number of zombies must be between 1 to 9."
+           << endl;
+      cout << "Enter number of zombies => ";
       cin >> input;
     }
     // Set new zombie counts
@@ -151,19 +150,24 @@ void GenerateGameSettings() {
     cin.get();
     pf::ClearScreen();
   } else {
-    // Set board rows and columns to default settings
-    BoardRows = kRows;
-    BoardColumns = kCols;
+    // Clear screen and use default settings
     pf::ClearScreen();
   }
 }
 
 // Creates an imaginary game board, for example
 // **r*r*rr*
-// r**r*r**r
+// r**rAr**r
 // r*rr*rrr*
+// uncomment line 180, 183, 186 to visualize imaginaryBoard
 void CreateGameBoard() {
+  // Randomize seed
   srand(time(0));
+  // Initialize centerRow and centerColumn to calculate center of board to place
+  // Alien
+  int centerRow = BoardRows / 2;
+  int centerColumn = BoardColumns / 2;
+
   // ^ - up
   // v - down
   // < - left
@@ -172,11 +176,21 @@ void CreateGameBoard() {
   // p - pod
   // r - rock
   char gameObj[8] = {' ', '^', 'v', '<', '>', 'h', 'p', 'r'};
+  // Generate Real Game Board
+  imaginaryBoard.resize(BoardRows);
   for (int row = 0; row < BoardRows; ++row) {
     for (int col = 0; col < BoardColumns; ++col) {
+      imaginaryBoard[row].resize(BoardColumns);
       int random_number = rand() % 7;
-      Board[row][col] = gameObj[random_number];
+      if (row == centerRow && col == centerColumn) {
+        imaginaryBoard[row][col] = 'A';
+        // cout << imaginaryBoard[row][col];
+      } else {
+        imaginaryBoard[row][col] = gameObj[random_number];
+        // cout << imaginaryBoard[row][col];
+      }
     }
+    // cout << endl;
   }
 }
 
@@ -195,11 +209,8 @@ void CreateBorder() {
 
 // Show game board with indentations and borders
 void ShowGameBoard() {
-  // Initialize a and b to calculate center of board to place Alien
-  int a = BoardRows / 2;
-  int b = BoardColumns / 2;
-  // When imaginary board column is more than 10, Indent spaces at left side of
-  // game title
+  // When imaginary board column is more than 10,
+  // Indent spaces at left side of game title
   if (BoardColumns > 10) {
     for (int col = 0; col < (BoardColumns * 2 - 20) / 2 + 1; col++) {
       cout << " ";
@@ -212,10 +223,7 @@ void ShowGameBoard() {
     printf(" %i ", row + 1);
     for (int col = 0; col < BoardColumns; ++col) {
       cout << "|";
-      if (row == a && col == b) {
-        Board[row][col] = 'A';
-      }
-      cout << Board[row][col];
+      cout << imaginaryBoard[row][col];
     }
     cout << "|";
     cout << endl;
@@ -245,16 +253,20 @@ void ShowGameBoard() {
 
 // Show game character attributes below game board
 void ShowGameCharacters() {
-  srand(time(0));
+  // srand(time(0));
 
-  Alien a;
-  Zombie z;
+  Alien alien;
+  Zombie zombie;
 
-  cout << "-> Alien: life = " << a.life << ", attack = " << a.attack
+  cout << "-> Alien: life = " << alien.life << ", attack = " << alien.attack
        << std::endl;
   for (int i = 0; i < ZombieCount; i++) {
-    printf("   Zombie %i : life = %i, attack = %i, range = %i\n", i + 1, z.life,
-           z.attack, z.range);
+    // problem: multiple zombies share the same attributes
+    // alien.life = (rand() % 5 + 1) * 50;
+    // alien.attack = (rand() % 3 + 1) * 5;
+    // alien.range = rand() % 10 + 1;
+    printf("   Zombie %i : life = %i, attack = %i, range = %i\n", i + 1,
+           zombie.life, zombie.attack, zombie.range);
   }
 }
 

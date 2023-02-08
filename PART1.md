@@ -13,7 +13,7 @@ All the features completed.
 1. Customize Game Settings (Abdulkafi)
 2. Game Dashboard (rony)
 3. Game Characters (Attributes) (douaa)
-4. Board Dimensions (Abdulkafi)
+4. Board Dimensions (kafi)
 
 ### To Do
 
