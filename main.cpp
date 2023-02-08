@@ -213,7 +213,7 @@ void ShowGameBoard() {
       cout << " ";
     }
   }
-  cout << " .: Alien vs Zombie :. " << endl;
+  cout << "  .: Alien vs Zombie :." << endl;
   // Generate real game board
   for (int row = 0; row < BoardRows; ++row) {
     CreateBorder();
