@@ -10,9 +10,6 @@
 // *********************************************************
 
 #include "pf/helper.h"
-#include <cctype>
-#include <cstdlib>
-#include <ctime>
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -44,8 +41,8 @@ public:
 // Zombie
 class Zombie : public Character {
 public:
-  Zombie() { // problem: multiple zombies share the same attributes
-    // srand(time(0));
+  Zombie() { // problem: multiple zombies still share the same attributes
+    srand(time(0));
     life = (rand() % 5 + 1) * 50;
     attack = (rand() % 3 + 1) * 5;
     range = rand() % 3 + 1;
@@ -162,7 +159,7 @@ void GenerateGameSettings() {
 // uncomment line 180, 183, 186 to visualize imaginaryBoard
 void CreateGameBoard() {
   // Randomize seed
-  srand(time(0));
+  // srand(time(0));
   // Initialize centerRow and centerColumn to calculate center of board to place
   // Alien
   int centerRow = BoardRows / 2;
