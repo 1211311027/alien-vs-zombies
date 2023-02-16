@@ -20,6 +20,7 @@ int BoardColumns = 9;
 int ZombieCount = 1;
 char changeSettings;
 vector<vector<char>> imaginaryBoard;
+enum Direction {Left, Right, Up, Down};
 
 // Game Characters
 // All Character
@@ -33,19 +34,77 @@ public:
 // Player
 class Alien : public Character {
 public:
+  int row;
+    int col;
   Alien() {
     life = 100;
     attack = 0;
+     row = BoardRows / 2;
+        col = BoardColumns / 2;
   }
 };
+ void move(char direction)
+    {
+        switch (direction)
+        {
+        case 'u': // up
+            if (row > 0)
+                row--;
+            break;
+        case 'd': // down
+            if (row < BoardRows - 1)
+                row++;
+            break;
+        case 'l': // left
+            if (col > 0)
+                col--;
+            break;
+        case 'r': // right
+            if (col < BoardColumns - 1)
+                col++;
+            break;
+        }
+    }
+void PrintBoard() {
+    // Clear the console
+    system("cls");
+
+    // Print the board
+    for (int i = 0; i < BoardRows; i++) {
+        for (int j = 0; j < BoardColumns; j++) {
+            cout << imaginaryBoard[i][j] << " ";
+        }
+        cout << endl;
+    }
+}
+
+    void moveAlien()
+    {
+        while (true)
+        {
+            // Print board
+            PrintBoard();
+            // Get user input for direction
+            char direction;
+            cout << "Enter direction (u/d/l/r) => ";
+            cin >> direction;
+            // Move alien
+            move(direction);
+        }
+    };
+
 // Zombie
 class Zombie : public Character {
 public:
+int row;
+int col;
   Zombie() { // problem: multiple zombies still share the same attributes
     srand(time(0));
     life = (rand() % 5 + 1) * 50;
     attack = (rand() % 3 + 1) * 5;
     range = rand() % 3 + 1;
+    row = rand()%BoardRows;
+col = rand()%BoardColumns;
   }
 };
 
@@ -190,6 +249,7 @@ void CreateGameBoard() {
     // cout << endl;
   }
 }
+
 
 // Function to be called in ShowGameBoard()
 // Creates +-+-+-+-+-+-+-+- border
