@@ -20,6 +20,7 @@ int BoardColumns = 9;
 int ZombieCount = 1;
 char changeSettings;
 vector<vector<char>> imaginaryBoard;
+string command;
 
 // Game Characters
 // All Character
@@ -265,15 +266,46 @@ void ShowGameCharacters() {
     printf("   Zombie %i : life = %i, attack = %i, range = %i\n", i + 1,
            zombie.life, zombie.attack, zombie.range);
   }
+  cout << endl;
+}
+
+void receiveCommand() {
+  cout << "<command> ";
+  cin >> command;
+}
+
+void updateGameBoard() {
+  cout << endl;
+  if (command == "up") {
+    cout << "Alien is moving up!" << endl;
+  }
+  if (command == "down") {
+    cout << "Alien is moving down!" << endl;
+  }
+  if (command == "left") {
+    cout << "Alien is moving to the left!" << endl;
+  }
+  if (command == "right") {
+    cout << "Alien is moving to the right!" << endl;
+  }
+  if (command == "quit") {
+    cout << "Thank you for playing the game!" << endl;
+  }
 }
 
 int main() {
-
-  GenerateGameSettings();
-  CreateGameBoard();
-  ShowGameBoard();
-  ShowGameCharacters();
-  pf::Pause();
+  bool gameOn = 1;
+  // create a game loop
+  while (gameOn) {
+    GenerateGameSettings();
+    CreateGameBoard();
+    ShowGameBoard();
+    ShowGameCharacters();
+    receiveCommand();
+    updateGameBoard();
+    pf::Pause();
+    // ShowGameBoard();
+  }
 
   return 0;
 }
