@@ -296,8 +296,8 @@ void updateGameBoard() {
 int main() {
   bool gameOn = 1;
   // create a game loop
+  GenerateGameSettings();
   while (gameOn) {
-    GenerateGameSettings();
     CreateGameBoard();
     ShowGameBoard();
     ShowGameCharacters();
