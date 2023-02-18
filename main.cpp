@@ -157,7 +157,7 @@ void GenerateGameSettings() {
 // **r*r*rr*
 // r**rAr**r
 // r*rr*rrr*
-// uncomment line 180, 183, 186 to visualize imaginaryBoard
+// uncomment line 196, 205, 208 to visualize imaginaryBoard
 void CreateGameBoard() {
   // Randomize seed
   // srand(time(0));
@@ -173,22 +173,34 @@ void CreateGameBoard() {
   // h - health
   // p - pod
   // r - rock
-  char gameObj[8] = {' ', '^', 'v', '<', '>', 'h', 'p', 'r'};
+  vector<char> gameObj = {' ', '^', 'v', '<', '>', 'h', 'p', 'r'};
+  // Add zombies
+  // **POSSIBILITY OF BUG**: random number doesnt reach the largest number and
+  // spawn less zombie
+  for (int i = 0; i < ZombieCount; i++) {
+    gameObj.push_back(char(i + 49)); // '1' is 49 in ASCII
+  }
   // Generate Real Game Board
   imaginaryBoard.resize(BoardRows);
   for (int row = 0; row < BoardRows; ++row) {
     for (int col = 0; col < BoardColumns; ++col) {
       imaginaryBoard[row].resize(BoardColumns);
-      int random_number = rand() % 7;
+
+      int random_number = rand() % gameObj.size();
       if (row == centerRow && col == centerColumn) {
         imaginaryBoard[row][col] = 'A';
         // cout << imaginaryBoard[row][col];
+      } else if (random_number >= 8 && gameObj.size() >= 8) {
+        // when random_number is 8th or above
+        imaginaryBoard[row][col] = gameObj[random_number];
+        // remove the zombie spawned from the vector
+        gameObj.erase(gameObj.begin() + random_number);
       } else {
         imaginaryBoard[row][col] = gameObj[random_number];
         // cout << imaginaryBoard[row][col];
       }
     }
-    // cout << endl;
+    //  cout << endl;
   }
 }
 
@@ -304,7 +316,7 @@ int main() {
     receiveCommand();
     updateGameBoard();
     pf::Pause();
-    // ShowGameBoard();
+    ShowGameBoard();
   }
 
   return 0;
