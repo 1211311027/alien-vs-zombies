@@ -20,7 +20,7 @@ int BoardColumns = 9;
 int ZombieCount = 1;
 char changeSettings;
 vector<vector<char>> imaginaryBoard;
-string command;
+bool gameOn = 1;
 
 // Game Characters
 // All Character
@@ -282,12 +282,11 @@ void ShowGameCharacters() {
 }
 
 void receiveCommand() {
+  string command;
   cout << "<command> ";
   cin >> command;
-}
-
-void updateGameBoard() {
   cout << endl;
+
   if (command == "up") {
     cout << "Alien is moving up!" << endl;
   }
@@ -302,21 +301,19 @@ void updateGameBoard() {
   }
   if (command == "quit") {
     cout << "Thank you for playing the game!" << endl;
+    gameOn = 0;
   }
 }
 
 int main() {
-  bool gameOn = 1;
   // create a game loop
   GenerateGameSettings();
+  CreateGameBoard();
   while (gameOn) {
-    CreateGameBoard();
     ShowGameBoard();
     ShowGameCharacters();
     receiveCommand();
-    updateGameBoard();
     pf::Pause();
-    ShowGameBoard();
   }
 
   return 0;
