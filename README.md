@@ -14,8 +14,6 @@ Game Dashboard
 <img width="500px" height="auto" src="./.github/game-dashboard.jpg">
 </p>
 
-YouTube link: [Video Demo](https://youtu.be/W62QIoYPHCs).
-
 ## Compilation Instructions
 
 How to run the code?
