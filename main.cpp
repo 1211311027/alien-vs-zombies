@@ -1,14 +1,3 @@
-// *********************************************************
-// Course: TCP1101 PROGRAMMING FUNDAMENTALS
-// Year: Trimester 1, 2022/23 (T2215)
-// Lab: TT8L
-// Names: LEE RONG YI | ABDULKAFI WALEED ABDULKAFI AL MALAMI | MOALI DOUAA
-// IDs: 1211311027 | 1201102665 | 1211307919
-// Emails: 1211311027@student.mmu.edu.my | 1201102665@student.mmu.edu.my |
-// 1211307919@student.mmu.edu.my
-// Phones: +60102736440 | +60183211296 | +60182565383
-// *********************************************************
-
 #include "pf/helper.h"
 #include <iostream>
 #include <vector>
@@ -26,138 +15,93 @@ string command;
 // All Character
 class Character {
 public:
-  int life;
-  int attack;
-  int range;
+int life;
+int attack;
+int range;
 };
 
 // Player
 class Alien : public Character {
 public:
-  int row;
-    int col;
-  Alien() {
-    life = 100;
-    attack = 0;
-     row = BoardRows / 2;
-        col = BoardColumns / 2;
-  }
-};
- void move(char direction)
-    {
-        switch (direction)
-        {
-        case 'u': // up
-            if (row > 0)
-                row--;
-            break;
-        case 'd': // down
-            if (row < BoardRows - 1)
-                row++;
-            break;
-        case 'l': // left
-            if (col > 0)
-                col--;
-            break;
-        case 'r': // right
-            if (col < BoardColumns - 1)
-                col++;
-            break;
-        }
-    }
-void PrintBoard() {
-    // Clear the console
-    system("cls");
-
-    // Print the board
-    for (int i = 0; i < BoardRows; i++) {
-        for (int j = 0; j < BoardColumns; j++) {
-            cout << imaginaryBoard[i][j] << " ";
-        }
-        cout << endl;
-    }
+int x, y;
+Alien() {
+life = 100;
+attack = 0;
+x = BoardRows / 2;
+y = BoardColumns / 2;
 }
-
-    void moveAlien()
-    {
-        while (true)
-        {
-            // Print board
-            PrintBoard();
-            // Get user input for direction
-            char direction;
-            cout << "Enter direction (u/d/l/r) => ";
-            cin >> direction;
-            // Move alien
-            move(direction);
-        }
-    };
-
+void move(char dir) {
+if (dir == 'U' || dir == 'u')
+x--;
+else if (dir == 'D' || dir == 'd')
+x++;
+else if (dir == 'L' || dir == 'l')
+y--;
+else if (dir == 'R' || dir == 'r')
+y++;
+}
+};
 // Zombie
 class Zombie : public Character {
 public:
-int row;
-int col;
-  Zombie() { // problem: multiple zombies still share the same attributes
-    srand(time(0));
-    life = (rand() % 5 + 1) * 50;
-    attack = (rand() % 3 + 1) * 5;
-    range = rand() % 3 + 1;
-    row = rand()%BoardRows;
-col = rand()%BoardColumns;
-  }
+Zombie() { // problem: multiple zombies still share the same attributes
+srand(time(0));
+life = (rand() % 5 + 1) * 50;
+attack = (rand() % 3 + 1) * 5;
+range = rand() % 3 + 1;
+}
 };
 
 // Game Objects
 struct gameObj {
-  char space;
-  char up;
-  char down;
-  char left;
-  char right;
-  char health;
-  char pod;
-  char rock;
+char space;
+char up;
+char down;
+char left;
+char right;
+char health;
+char pod;
+char rock;
 };
 gameObj gameObj = {' ', '^', 'v', '<', '>', 'h', 'p', 'r'};
 // access it with gameObj.health for example, to replace objects in board
 
 // Game Settings
 void GenerateGameSettings() {
-  string acceptedStrings[2] = {"y", "n"};
+string acceptedStrings[2] = {"y", "n"};
 
-  // Game Start UI
-  cout << "Default Game Settings" << endl;
-  cout << "-----------------------" << endl;
-  cout << "Board Rows    : " << BoardRows << endl;
-  cout << "Board Columns : " << BoardColumns << endl;
-  cout << "Zombie Count  : " << ZombieCount << endl;
-  cout << endl;
-  cout << "Do you wish to change the game default settings (y/n)? => ";
-  cin >> changeSettings;
+// Game Start UI
+cout << "Default Game Settings" << endl;
+cout << "-----------------------" << endl;
+cout << "Board Rows : " << BoardRows << endl;
+cout << "Board Columns : " << BoardColumns << endl;
+cout << "Zombie Count : " << ZombieCount << endl;
+cout << endl;
+cout << "Do you wish to change the game default settings (y/n)? => ";
+cin >> changeSettings;
 
-  if (toupper(changeSettings) == 'Y') {
-    pf::ClearScreen();
-    // Receive input for board rows
-    int input;
-    cout << "Board Settings" << endl;
-    cout << "----------------" << endl;
-    cout << "Enter rows => ";
-    cin >> input;
-    // Check if input is a number
-    while (cin.fail()) {
-      cout << "Invalid input. Enter a number: ";
-      cin.clear();
-      cin.ignore(256, '\n');
-      cin >> input;
-    }
-    // Check if input is even
-    while (input % 2 == 0) {
-      cout << "Invalid input. Enter an odd number: ";
-      cin >> input;
-    }
-    // Set new board rows
-    BoardRows = input;
+if (toupper(changeSettings) == 'Y') {
+pf::ClearScreen();
+// Receive input for board rows
+int input;
+cout << "Board Settings" << endl;
+cout << "----------------" << endl;
+cout << "Enter rows => ";
+cin >> input;
+// Check if input is a number
+while (cin.fail()) {
+cout << "Invalid input. Enter a number: ";
+cin.clear();
+cin.ignore(256, '\n');
+cin >> input;
+}
+// Check if input is even
+while (input % 2 == 0) {
+cout << "Invalid input. Enter an odd number: ";
+cin >> input;
+}
+// Set new board rows
+BoardRows = input;
 
     // Receive input for board columns
     cout << "Enter Columns: ";
@@ -250,7 +194,6 @@ void CreateGameBoard() {
   }
 }
 
-
 // Function to be called in ShowGameBoard()
 // Creates +-+-+-+-+-+-+-+- border
 void CreateBorder() {
@@ -318,10 +261,10 @@ void ShowGameCharacters() {
   cout << "-> Alien: life = " << alien.life << ", attack = " << alien.attack
        << std::endl;
   for (int i = 0; i < ZombieCount; i++) {
-    // problem: multiple zombies share the same attributes
-    // alien.life = (rand() % 5 + 1) * 50;
-    // alien.attack = (rand() % 3 + 1) * 5;
-    // alien.range = rand() % 10 + 1;
+     problem: multiple zombies share the same attributes
+    alien.life = (rand() % 5 + 1) * 50;
+    alien.attack = (rand() % 3 + 1) * 5;
+     alien.range = rand() % 10 + 1;
     printf("   Zombie %i : life = %i, attack = %i, range = %i\n", i + 1,
            zombie.life, zombie.attack, zombie.range);
   }
@@ -354,10 +297,72 @@ void updateGameBoard() {
 
 int main() {
   bool gameOn = 1;
-  // create a game loop
-  GenerateGameSettings();
-  while (gameOn) {
-    CreateGameBoard();
+GenerateGameSettings();
+
+// Create imaginary board
+for (int i = 0; i < BoardRows; i++) {
+vector<char> row;
+for (int j = 0; j < BoardColumns; j++) {
+row.push_back(gameObj.space);
+}
+imaginaryBoard.push_back(row);
+}
+
+// Place Alien
+Alien alien;
+int alienRow = alien.x;
+int alienColumn = alien.y;
+imaginaryBoard[alienRow][alienColumn] = 'A';
+
+// Place Zombies
+vector<Zombie> zombies;
+for (int i = 0; i < ZombieCount; i++) {
+Zombie zombie;
+int zombieRow, zombieColumn;
+do {
+zombieRow = rand() % BoardRows;
+zombieColumn = rand() % BoardColumns;
+} while (imaginaryBoard[zombieRow][zombieColumn] != gameObj.space);
+imaginaryBoard[zombieRow][zombieColumn] = 'Z';
+zombies.push_back(zombie);
+}
+
+// Game Loop
+while (true) {
+// Print current board
+for (int i = 0; i < BoardRows; i++) {
+for (int j = 0; j < BoardColumns; j++) {
+cout << imaginaryBoard[i][j] << " ";
+}
+cout << endl;
+}
+// Alien Move Commands
+cout << "Enter a move command (up, down, left, right): ";
+cin >> command;
+if (command == "up" && alienRow > 0) {
+  // Move alien up
+  imaginaryBoard[alienRow][alienColumn] = ' ';
+  alienRow--;
+  imaginaryBoard[alienRow][alienColumn] = 'A';
+} else if (command == "down" && alienRow < BoardRows - 1) {
+  // Move alien down
+  imaginaryBoard[alienRow][alienColumn] = ' ';
+  alienRow++;
+  imaginaryBoard[alienRow][alienColumn] = 'A';
+} else if (command == "left" && alienColumn > 0) {
+  // Move alien left
+  imaginaryBoard[alienRow][alienColumn] = ' ';
+  alienColumn--;
+  imaginaryBoard[alienRow][alienColumn] = 'A';
+} else if (command == "right" && alienColumn < BoardColumns - 1) {
+  // Move alien right
+  imaginaryBoard[alienRow][alienColumn] = ' ';
+  alienColumn++;
+  imaginaryBoard[alienRow][alienColumn] = 'A';
+} else {
+  cout << "Invalid move command!" << endl;
+}
+ CreateGameBoard();
     ShowGameBoard();
     ShowGameCharacters();
     receiveCommand();
@@ -368,4 +373,3 @@ int main() {
 
   return 0;
 }
- 
