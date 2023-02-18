@@ -284,11 +284,10 @@ void ShowGameCharacters() {
   cout << "-> Alien: life = " << alien.life << ", attack = " << alien.attack
        << std::endl;
   for (int i = 0; i < ZombieCount; i++) {
-  problem:
-    multiple zombies share the same attributes alien.life =
-        (rand() % 5 + 1) * 50;
-    alien.attack = (rand() % 3 + 1) * 5;
-    alien.range = rand() % 10 + 1;
+    // problem: multiple zombies share the same attributes
+    // alien.life = (rand() % 5 + 1) * 50;
+    // alien.attack = (rand() % 3 + 1) * 5;
+    // alien.range = rand() % 10 + 1;
     printf("   Zombie %i : life = %i, attack = %i, range = %i\n", i + 1,
            zombie.life, zombie.attack, zombie.range);
   }
