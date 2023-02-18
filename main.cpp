@@ -84,9 +84,9 @@ void GenerateGameSettings() {
   // Game Start UI
   cout << "Default Game Settings" << endl;
   cout << "-----------------------" << endl;
-  cout << "Board Rows : " << BoardRows << endl;
+  cout << "Board Rows    : " << BoardRows << endl;
   cout << "Board Columns : " << BoardColumns << endl;
-  cout << "Zombie Count : " << ZombieCount << endl;
+  cout << "Zombie Count  : " << ZombieCount << endl;
   cout << endl;
   cout << "Do you wish to change the game default settings (y/n)? => ";
   cin >> changeSettings;
