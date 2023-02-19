@@ -42,8 +42,16 @@ string message;
 
 // epic math time a^2 = b^2 + c^2
 int checkDistance(int x1, int y1, int x2, int y2) {
+  float iceCream;
   int answer;
-  answer = sqrt((y2 - y1) ^ 2 + (x2 - x1) ^ 2);
+  if (x1 != x2 && y1 != y2) {
+    iceCream = sqrt(abs(y2 - y1) ^ 2 + abs(x2 - x1) ^ 2);
+    answer = round(iceCream);
+  } else if (x1 == x2) {
+    answer = abs(y2 - y1);
+  } else if (y1 == y2) {
+    answer = abs(x2 - x1);
+  }
   return answer;
 }
 
@@ -167,18 +175,17 @@ void Zombie::move(Alien &alien, Zombie &zombie, vector<Zombie> &zombies) {
       x++;
       imaginaryBoard[y][x] = (char)(zombies[i].index + 48);
     } else { // error checker
-             // cout << "There is an error! Zombie could not move!" << endl;
-      // pf::Pause();
+      cout << "There is an error! Zombie could not move!" << endl;
+      pf::Pause();
+      printf("Zombie %i at (%i, %i) can't move!\n", zombies[i].index,
+             zombies[i].getX(), zombies[i].getY());
       //     hits wall
       // zombies[i].move(alien, zombie, zombies);
     }
-    // check if alien in range, if is, attack
-    for (int i = 0; i < zombies.size(); i++) {
-      int num = checkDistance(alien.getX(), alien.getY(), zombies[i].getX(),
-                              zombies[i].getY());
-      if (num <= zombies[i].range) {
-        alien.health = alien.health - zombies[i].attack;
-      }
+    int num = checkDistance(alien.getX(), alien.getY(), zombies[i].getX(),
+                            zombies[i].getY());
+    if (num <= zombies[i].range) {
+      alien.health = alien.health - zombies[i].attack;
     }
   }
 }
@@ -472,7 +479,7 @@ void createGameCharacters(Alien &alien, Zombie &zombie,
     zombie.index = i + 1;
     zombie.health = (rand() % 4 + 1) * 50;
     zombie.attack = (rand() % 3 + 1) * 5;
-    zombie.range = rand() % 5 + 1;
+    zombie.range = rand() % 3 + 1;
     zombies.push_back(zombie);
   }
 }
