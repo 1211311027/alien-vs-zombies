@@ -257,7 +257,6 @@ void createGameBoard(Alien &alien, Zombie &zombie, vector<Zombie> &zombies) {
     // until all zombies are spawned
     gameObj.push_back(char(i + 49)); // '1' is 49 in ASCII
   }
-
   // Generate Real Game Board
   imaginaryBoard.resize(BoardRows);
   for (int row = 0; row < BoardRows; ++row) {
@@ -272,15 +271,14 @@ void createGameBoard(Alien &alien, Zombie &zombie, vector<Zombie> &zombies) {
         // cout << centerColumn << centerRow << endl; // 4, 2
         imaginaryBoard[y][x] = 'A';
         // cout << imaginaryBoard[row][col];
-      } else if (random_number >= 8 && gameObj.size() >= 8) {
+      } else if (random_number >= 10 && gameObj.size() >= 10) {
         // zombie code
-        for (int i = 0; i < zombies.size(); i++) {
-          if (gameObj[random_number] == zombies[i].index) {
-            zombie = zombies[i];
-          }
-        };
-        zombie.setPos(col, row);
-        imaginaryBoard[row][col] = gameObj[random_number];
+        int num = (int)gameObj[random_number] - 48 -
+                  1; // convert '1' to 1,
+                     // then change 1 to 0 for indexing in array
+        zombies[num].setPos(col, row);
+        imaginaryBoard[zombies[num].getY()][zombies[num].getX()] =
+            gameObj[random_number];
         gameObj.erase( // remove the zombie spawned from the vector
             gameObj.begin() + random_number);
       } else {
@@ -424,10 +422,6 @@ void checkNextBox(Alien &alien, string direction) {
     break;
   }
 }
-
-void updateGameBoard(){
-    // updates imaginaryBoard
-};
 
 void receiveCommand(Alien &alien) {
   string command;
