@@ -62,7 +62,7 @@ gameObj gameObj = {' ', '^', 'v', '<', '>', 'h', 'p', 'r'};
 // access it with gameObj.health for example, to replace objects in board
 
 // Game Settings
-void GenerateGameSettings() {
+void generateGameSettings() {
   string acceptedStrings[2] = {"y", "n"};
 
   // Game Start UI
@@ -155,7 +155,7 @@ void GenerateGameSettings() {
 // r**rAr**r
 // r*rr*rrr*
 // uncomment line 196, 205, 208 to visualize imaginaryBoard
-void CreateGameBoard() {
+void createGameBoard() {
   // Randomize seed
   // srand(time(0));
   // Initialize centerRow and centerColumn
@@ -218,7 +218,7 @@ void CreateBorder() {
 }
 
 // Show game board with indentations and borders
-void ShowGameBoard() {
+void showGameBoard() {
   // When imaginary board column is more than 10,
   // Indent spaces at left side of game title
   if (BoardColumns > 10) {
@@ -261,7 +261,7 @@ void ShowGameBoard() {
   cout << endl;
 }
 
-void CreateGameCharacters() {
+void createGameCharacters() {
   srand(time(0));
   // Initialize characters
   Alien alien;
@@ -280,7 +280,7 @@ void CreateGameCharacters() {
 }
 
 // Show game character attributes below game board
-void ShowGameCharacters() {
+void showGameCharacters() {
 
   Alien alien;
   Zombie zombie;
@@ -293,6 +293,8 @@ void ShowGameCharacters() {
   }
   cout << endl;
 }
+
+void updateGameBoard();
 
 void receiveCommand() {
   string command;
@@ -324,12 +326,12 @@ void receiveCommand() {
 
 int main() {
   // create a game loop
-  GenerateGameSettings();
-  CreateGameBoard();
-  CreateGameCharacters();
+  generateGameSettings();
+  createGameBoard();
+  createGameCharacters();
   while (gameOn) {
-    ShowGameBoard();
-    ShowGameCharacters();
+    showGameBoard();
+    showGameCharacters();
     receiveCommand();
   }
 
