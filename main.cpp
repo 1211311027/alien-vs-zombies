@@ -341,10 +341,6 @@ void checkNextBox(Alien &alien, string direction) {
   int x = alien.getX();
   int y = alien.getY();
   //  check what is in next box
-  // cout << "Testing..." << endl;
-  // printf("Really testing....\n");
-  // printf("Alien coordinate: (%i, %i)\n", x, y);
-  // cout << "What is in box above Alien: " << imaginaryBoard[y - 1][x] << endl;
   whatIsInTheBox = imaginaryBoard[y - 1][x];
   switch (whatIsInTheBox) {
   case 'h':
@@ -366,11 +362,6 @@ void checkNextBox(Alien &alien, string direction) {
     break;
   }
   pf::Pause();
-  // if (imaginaryBoard[row][col - 1] == '^') {
-  // cout << "It is an up arrow above me! -Alien" << endl;
-  //} else {
-  // cout << "It is something else!" << endl;
-  //};
 }
 
 void updateGameBoard(){
