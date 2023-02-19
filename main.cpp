@@ -11,8 +11,7 @@
 
 #include "pf/helper.h"
 #include <iostream>
-#include <stdio.h>
-#include <string.h>
+#include <termios.h> // for receiving arrow key inputs
 #include <vector>
 // using namespace std;
 using std::cin;
@@ -41,7 +40,7 @@ public:
 // Player
 class Alien : public Character {
 public:
-  void move(Alien &alien);
+  void move(Alien &alien, string direction);
   void display(Alien &alien);
   void setPos(int newX, int newY);
   int getX() const;
@@ -51,8 +50,28 @@ private:
   int x_, y_;
 };
 
-void Alien::move(Alien &alien){
-
+void Alien::move(Alien &alien, string direction) {
+  int x = alien.getX();
+  int y = alien.getY();
+  if (direction == "up" && y != 0) {
+    alien.setPos(x, y - 1);
+    y--;
+    imaginaryBoard[y][x] = 'A';
+  } else if (direction == "down" && y != BoardRows) {
+    alien.setPos(x, y + 1);
+    y++;
+    imaginaryBoard[y][x] = 'A';
+  } else if (direction == "left" && x != 0) {
+    alien.setPos(x - 1, y);
+    x--;
+    imaginaryBoard[y][x] = 'A';
+  } else if (direction == "right" && x != BoardColumns) {
+    alien.setPos(x + 1, y);
+    x++;
+    imaginaryBoard[y][x] = 'A';
+  } else { // error checker
+    cout << "There is an error! Alien could not move!" << endl;
+  }
 };
 void Alien::display(Alien &alien) {
   cout << "-> Alien: life = " << alien.life << ", attack = " << alien.attack
@@ -344,10 +363,26 @@ void checkNextBox(Alien &alien, string direction) {
   whatIsInTheBox = imaginaryBoard[y - 1][x];
   switch (whatIsInTheBox) {
   case 'h':
-    cout << "This is a health!" << endl;
+    // cout << "This is a health!" << endl;
+    // pf::Pause();
+    //  leave a trail
+    imaginaryBoard[y][x] = '.';
+    // move alien to next box
+    alien.move(alien, direction);
+    // show the gameboard
+    showGameBoard();
+    // pf::Pause();
     break;
   case 'p':
-    cout << "This is a pod!" << endl;
+    // cout << "This is a pod!" << endl;
+    // pf::Pause();
+    //  leave a trail
+    imaginaryBoard[y][x] = '.';
+    // move alien to next box
+    alien.move(alien, direction);
+    // show the gameboard
+    showGameBoard();
+    // pf::Pause();
     break;
   case 'r':
     cout << "This is a rock!" << endl;
@@ -355,9 +390,25 @@ void checkNextBox(Alien &alien, string direction) {
   default:
     if (whatIsInTheBox == '^' || whatIsInTheBox == 'v' ||
         whatIsInTheBox == '<' || whatIsInTheBox == '>') {
-      cout << "This is an arrow! Arrow of " << whatIsInTheBox << endl;
+      // cout << "This is an arrow! Arrow of " << whatIsInTheBox << endl;
+      // pf::Pause();
+      //  leave a trail
+      imaginaryBoard[y][x] = '.';
+      // move alien to next box
+      alien.move(alien, direction);
+      // show the gameboard
+      showGameBoard();
+      // pf::Pause();
     } else {
-      cout << "There is nothing!" << endl;
+      // cout << "There is nothing!" << endl;
+      // pf::Pause();
+      //  leave a trail
+      imaginaryBoard[y][x] = '.';
+      // move alien to next box
+      alien.move(alien, direction);
+      // show the gameboard
+      showGameBoard();
+      // pf::Pause();
     }
     break;
   }
@@ -369,39 +420,60 @@ void updateGameBoard(){
 };
 
 void receiveCommand(Alien &alien) {
+// Black magic to prevent Linux from buffering keystrokes.
+#define STDIN_FILENO 0
+  struct termios t;
+  tcgetattr(STDIN_FILENO, &t);
+  t.c_lflag &= ~ICANON;
+  tcsetattr(STDIN_FILENO, TCSANOW, &t);
+
   string command;
+  char c, d, e;
   cout << "<command> ";
-  cin >> command;
+  cin >> c;
+  cin >> d;
+  cin >> e;
   cout << endl;
 
-  // step 1: check box above and perform action, wall(out of bound) = stop,
-  // health = health +20, pod = attack nearest zombie -10, empty = continue go
-  // up
-  // step 2: regenerate board, place a trail . at alien current spot after
+  if ((c == 27) && (d == 91)) {
+    if (e == 65) {
+      // cout << "UP";
+      command = "up";
+    }
+    if (e == 66) {
+      // cout << "DOWN";
+      command = "down";
+    }
+    if (e == 67) {
+      // cout << "RIGHT";
+      command = "right";
+    }
+    if (e == 68) {
+      // cout << "LEFT";
+      command = "left";
+    }
+  }
+
+  // step 1: check box ahead according to direction
+  // step 2: if empty, repeat step 1
+  // step 3: perform action, wall(out of bound) = stop, health = health +20,
+  // pod = attack nearest zombie -10, empty = continue go ahead
+  // step 4: regenerate board, place a trail . at alien current spot after
   // every movement
-  // step 3: if empty, repeat step 1 & 2
-  // step 4: end alien turn, start zombie turn when wall is hit
+  // step 5: end alien turn, start zombie turn when wall is hit
   if (command == "up") {
-    cout << "Alien is moving up!" << endl;
-    pf::Pause();
     checkNextBox(alien, command);
     pf::ClearScreen();
   }
   if (command == "down") {
-    cout << "Alien is moving down!" << endl;
-    pf::Pause();
     checkNextBox(alien, command);
     pf::ClearScreen();
   }
   if (command == "left") {
-    cout << "Alien is moving to the left!" << endl;
-    pf::Pause();
     checkNextBox(alien, command);
     pf::ClearScreen();
   }
   if (command == "right") {
-    cout << "Alien is moving to the right!" << endl;
-    pf::Pause();
     checkNextBox(alien, command);
     pf::ClearScreen();
   }
