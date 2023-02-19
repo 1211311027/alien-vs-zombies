@@ -199,10 +199,10 @@ void generateGameSettings() {
 // **r*r*rr*
 // r**rAr**r
 // r*rr*rrr*
-// uncomment line 196, 205, 208 to visualize imaginaryBoard
+// uncomment line 242, 244, 251, 254 to visualize imaginaryBoard
 void createGameBoard(Alien &alien) {
   // Randomize seed
-  // srand(time(0));
+  srand(time(0));
   // Initialize centerRow and centerColumn
   // to calculate center of board to place Alien
   int centerRow = BoardRows / 2;
@@ -218,12 +218,16 @@ void createGameBoard(Alien &alien) {
   // add more spaces to increase chances of empty spaces
   vector<char> gameObj = {' ', ' ', ' ', ' ', '^', 'v',
                           '<', '>', 'h', 'p', 'r'};
+
   // Add zombies
-  // **POSSIBILITY OF BUG**: random number doesnt reach the largest number and
-  // spawn less zombie
   for (int i = 0; i < ZombieCount; i++) {
+    // **POSSIBILITY OF BUG**:
+    // random number doesnt reach the largest number and spawn less zombie
+    // idea: append zombies to the front instead, and change rand() range less
+    // until all zombies are spawned
     gameObj.push_back(char(i + 49)); // '1' is 49 in ASCII
   }
+
   // Generate Real Game Board
   imaginaryBoard.resize(BoardRows);
   for (int row = 0; row < BoardRows; ++row) {
