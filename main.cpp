@@ -294,6 +294,9 @@ void createGameBoard(Alien &alien, Zombie &zombie, vector<Zombie> &zombies) {
 }
 
 void updateGameBoard(Alien &alien, Zombie &zombie, vector<Zombie> &zombies) {
+  // remove trails and regenerate game objects
+  // while keeping alien and zombie location
+
   // Randomize seed
   srand(time(0));
 
@@ -699,9 +702,7 @@ int main() {
       printf("%s\n", message.c_str());
       printf("Zombies will start moving now!\n");
       pf::Pause();
-      updateGameBoard(alien, zombie,
-                      zombies); // remove trails and regenerate game objects
-      // while keeping alien and zombie location
+      updateGameBoard(alien, zombie, zombies);
       playerTurn = 1;
     }
   }
