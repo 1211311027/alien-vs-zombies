@@ -216,8 +216,7 @@ void createGameBoard(Alien &alien) {
   // p - pod
   // r - rock
   // add more spaces to increase chances of empty spaces
-  vector<char> gameObj = {' ', ' ', ' ', ' ', '^', 'v',
-                          '<', '>', 'h', 'p', 'r'};
+  vector<char> gameObj = {' ', ' ', ' ', '^', 'v', '<', '>', 'h', 'p', 'r'};
 
   // Add zombies
   for (int i = 0; i < ZombieCount; i++) {
