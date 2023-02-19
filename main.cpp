@@ -27,6 +27,7 @@ using std::cout;
 using std::endl;
 using std::numeric_limits;
 using std::string;
+using std::to_string;
 using std::vector;
 
 // Global scope variables
@@ -37,12 +38,13 @@ char changeSettings;
 vector<vector<char>> imaginaryBoard;
 bool gameOn = 1;
 bool playerTurn = 1;
+string message;
 
 // Game Characters
 // All Character
 class Character {
 public:
-  int life;
+  int health;
   int attack;
   int range;
 };
@@ -87,7 +89,7 @@ void Alien::move(Alien &alien, string direction) {
   }
 };
 void Alien::display(Alien &alien) {
-  cout << "-> Alien: life = " << alien.life << ", attack = " << alien.attack
+  cout << "-> Alien: health = " << alien.health << ", attack = " << alien.attack
        << std::endl;
 }
 void Alien::setPos(int newX, int newY) {
@@ -113,9 +115,9 @@ private:
 };
 
 void Zombie::display(vector<Zombie> &zombies) {
-  for (int i = 0; i < ZombieCount; i++) {
-    printf("   Zombie %i : life = %i, attack = %i, range = %i\n",
-           zombies[i].index, zombies[i].life, zombies[i].attack,
+  for (int i = 0; i < zombies.size(); i++) {
+    printf("   Zombie %i : health = %i, attack = %i, range = %i\n",
+           zombies[i].index, zombies[i].health, zombies[i].attack,
            zombies[i].range);
   }
 }
@@ -253,7 +255,7 @@ void createGameBoard(Alien &alien, Zombie &zombie, vector<Zombie> &zombies) {
   vector<char> gameObj = {' ', ' ', ' ', '^', 'v', '<', '>', 'h', 'p', 'r'};
 
   // Add zombies to the end of gameObj vector
-  for (int i = 0; i < ZombieCount; i++) {
+  for (int i = 0; i < zombies.size(); i++) {
     // **POSSIBILITY OF BUG**:
     // random number doesnt reach the largest number and spawn less zombie
     // idea: append zombies to the front instead, and change rand() range less
@@ -361,13 +363,13 @@ void createGameCharacters(Alien &alien, Zombie &zombie,
                           vector<Zombie> &zombies) {
   srand(time(0));
   // Create alien attributes
-  alien.life = (rand() % 4 + 1) * 50;
+  alien.health = (rand() % 4 + 1) * 50;
   alien.attack = 0;
   alien.range = 1;
   // Create zombie attributes
   for (int i = 0; i < ZombieCount; i++) {
     zombie.index = i + 1;
-    zombie.life = (rand() % 4 + 1) * 50;
+    zombie.health = (rand() % 4 + 1) * 50;
     zombie.attack = (rand() % 3 + 1) * 5;
     zombie.range = rand() % 5 + 1;
     zombies.push_back(zombie);
@@ -381,7 +383,8 @@ void showGameCharacters(Alien &alien, Zombie &zombie, vector<Zombie> &zombies) {
   cout << endl;
 }
 
-void checkNextBox(Alien &alien, string direction, vector<Zombie> &zombies) {
+void checkNextBox(Alien &alien, Zombie &zombie, string &direction,
+                  vector<Zombie> &zombies) {
   char whatIsInTheBox;
   int x = alien.getX();
   int y = alien.getY();
@@ -406,8 +409,10 @@ void checkNextBox(Alien &alien, string direction, vector<Zombie> &zombies) {
     // move alien to next box
     alien.move(alien, direction);
     // increase alien health
-    alien.life = alien.life + 20;
+    alien.health = alien.health + 20;
     showGameBoard();
+    showGameCharacters(alien, zombie, zombies);
+    printf("You picked up a health pack! Health +20!\n");
     pf::Pause();
     break;
   case 'p':
@@ -425,14 +430,30 @@ void checkNextBox(Alien &alien, string direction, vector<Zombie> &zombies) {
         nearestZombieIndex = zombies[i].index;
       }
     }
-    zombies[nearestZombieIndex - 1].life =
-        zombies[nearestZombieIndex - 1].life - 10;
+    zombies[nearestZombieIndex - 1].health =
+        zombies[nearestZombieIndex - 1].health - 10;
     showGameBoard();
     pf::Pause();
     break;
   case 'r':
-    cout << "This is a rock!" << endl;
+    message = "Alien hits a rock! Turn ends";
     playerTurn = 0;
+    break;
+  case ' ':
+    //  leave a trail
+    imaginaryBoard[y][x] = '.';
+    // move alien to next box
+    alien.move(alien, direction);
+    showGameBoard();
+    pf::Pause();
+    break;
+  case '.':
+    //  leave a trail
+    imaginaryBoard[y][x] = '.';
+    // move alien to next box
+    alien.move(alien, direction);
+    showGameBoard();
+    pf::Pause();
     break;
   default:
     if (whatIsInTheBox == '^' || whatIsInTheBox == 'v' ||
@@ -441,22 +462,52 @@ void checkNextBox(Alien &alien, string direction, vector<Zombie> &zombies) {
       imaginaryBoard[y][x] = '.';
       // move alien to next box
       alien.move(alien, direction);
+      // increase damage
+      alien.attack = alien.attack + 20;
+      // show message
       showGameBoard();
+      showGameCharacters(alien, zombie, zombies);
+      printf("You went through an arrow! Attack +20!\n");
       pf::Pause();
-    } else if (whatIsInTheBox == ' ') {
-      //  leave a trail
-      imaginaryBoard[y][x] = '.';
-      // move alien to next box
-      alien.move(alien, direction);
-      showGameBoard();
-      pf::Pause();
+      // change direction
+      if (whatIsInTheBox == '^') {
+        direction = "up";
+      } else if (whatIsInTheBox == 'v') {
+        direction = "down";
+      } else if (whatIsInTheBox == '<') {
+        direction = "left";
+      } else if (whatIsInTheBox == '>') {
+        direction = "right";
+      }
+    } else if ((int)whatIsInTheBox >= 49 && (int)whatIsInTheBox <= 57) {
+      // attacks zombie!
+      zombies[(int)whatIsInTheBox - 49].health =
+          zombies[(int)whatIsInTheBox - 49].health - alien.attack;
+      message =
+          string("You attacked zombie ") + to_string(zombie.index) + "!\n";
+      if (zombies[(int)whatIsInTheBox - 49].health <= 0) { // kills zombie
+        //  leave a trail
+        imaginaryBoard[y][x] = '.';
+        // move alien
+        alien.move(alien, direction);
+        // remove zombie from zombies
+        zombies.erase(zombies.begin() + ((int)whatIsInTheBox - 49));
+      }
+      alien.attack = 0;
+      playerTurn = 0;
     } else {
+      // cout << "The Box has: " << whatIsInTheBox << endl;
+      // cout << "The Box has: " << whatIsInTheBox << endl;
+      // cout << "The Box has: " << whatIsInTheBox << endl;
+      // pf::Pause();
+      message = "Alien hits a wall! Turn ends";
+      alien.attack = 0; // reset alien attack to 0
       playerTurn = 0;
     }
   }
 }
 
-void receiveCommand(Alien &alien, vector<Zombie> &zombies) {
+void receiveCommand(Alien &alien, Zombie &zombie, vector<Zombie> &zombies) {
   string command;
 #if defined(_WIN32)
 #define KEY_UP 72
@@ -561,19 +612,23 @@ void receiveCommand(Alien &alien, vector<Zombie> &zombies) {
   // step 5: end alien turn, start zombie turn when wall is hit
   while (playerTurn) {
     if (command == "up") {
-      checkNextBox(alien, command, zombies);
+      pf::ClearScreen();
+      checkNextBox(alien, zombie, command, zombies);
       pf::ClearScreen();
     }
     if (command == "down") {
-      checkNextBox(alien, command, zombies);
+      pf::ClearScreen();
+      checkNextBox(alien, zombie, command, zombies);
       pf::ClearScreen();
     }
     if (command == "left") {
-      checkNextBox(alien, command, zombies);
+      pf::ClearScreen();
+      checkNextBox(alien, zombie, command, zombies);
       pf::ClearScreen();
     }
     if (command == "right") {
-      checkNextBox(alien, command, zombies);
+      pf::ClearScreen();
+      checkNextBox(alien, zombie, command, zombies);
       pf::ClearScreen();
     }
     if (command == "quit") {
@@ -596,16 +651,16 @@ int main() {
     if (playerTurn == 1) {
       showGameBoard();
       showGameCharacters(alien, zombie, zombies);
-      receiveCommand(alien, zombies);
+      receiveCommand(alien, zombie, zombies);
     } else { // Zombie turn
-      printf("Zombies will start moving now!\n");
       // updateGameBoard(); // remove trails and regenerate game objects
       // while keeping alien and zombie location
       showGameBoard();
       showGameCharacters(alien, zombie, zombies);
+      printf("%s\n", message.c_str());
+      printf("Zombies will start moving now!\n");
       pf::Pause();
-      // playerTurn = 1;
-      break;
+      playerTurn = 1;
     }
   }
 
