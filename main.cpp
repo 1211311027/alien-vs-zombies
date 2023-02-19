@@ -34,18 +34,43 @@ public:
 // Player
 class Alien : public Character {
 public:
-  int x, y;
-  Alien() { life = 100, attack = 0; }
+  void setPos(int newX, int newY);
+  void move();
+  void display();
+  int getX() const;
+  int getY() const;
+
+private:
+  int x_, y_;
 };
+
+void Alien::setPos(int newX, int newY) {
+  x_ = newX;
+  y_ = newY;
+}
+int Alien::getX() const { return x_; }
+int Alien::getY() const { return y_; }
+
 // Zombie
 class Zombie : public Character {
-
 public:
   int x, y;
-  Zombie() { life = 100, attack = 10, range = 3; }
+  void setPos(int newX, int newY);
+  void move();
+  void display();
+  int getX() const;
+  int getY() const;
+
+private:
+  int x_, y_;
 };
-// vector of all zombies
-vector<Zombie> zombies;
+
+void Zombie::setPos(int newX, int newY) {
+  x_ = newX;
+  y_ = newY;
+}
+int Zombie::getX() const { return x_; }
+int Zombie::getY() const { return y_; }
 
 // Game Objects
 struct gameObj {
@@ -155,7 +180,7 @@ void generateGameSettings() {
 // r**rAr**r
 // r*rr*rrr*
 // uncomment line 196, 205, 208 to visualize imaginaryBoard
-void createGameBoard() {
+void createGameBoard(Alien &alien) {
   // Randomize seed
   // srand(time(0));
   // Initialize centerRow and centerColumn
@@ -185,16 +210,16 @@ void createGameBoard() {
 
       int random_number = rand() % gameObj.size();
       if (row == centerRow && col == centerColumn) {
-        Alien alien;
-        alien.x = centerColumn;
-        alien.y = centerRow;
-        imaginaryBoard[centerRow][centerColumn] = 'A';
+        alien.setPos(centerColumn, centerRow);
+        int x = alien.getX();
+        int y = alien.getY();
+        // cout << centerColumn << centerRow << endl; // 4, 2
+        imaginaryBoard[y][x] = 'A';
         // cout << imaginaryBoard[row][col];
       } else if (random_number >= 8 && gameObj.size() >= 8) {
-        // when random_number is 8th or above
         imaginaryBoard[row][col] = gameObj[random_number];
-        // remove the zombie spawned from the vector
-        gameObj.erase(gameObj.begin() + random_number);
+        gameObj.erase( // remove the zombie spawned from the vector
+            gameObj.begin() + random_number);
       } else {
         imaginaryBoard[row][col] = gameObj[random_number];
         // cout << imaginaryBoard[row][col];
@@ -261,10 +286,9 @@ void showGameBoard() {
   cout << endl;
 }
 
-void createGameCharacters() {
+void createGameCharacters(Alien &alien, vector<Zombie> &zombies) {
   srand(time(0));
   // Initialize characters
-  Alien alien;
   Zombie zombie;
   // Create alien attributes
   alien.life = 100;
@@ -280,10 +304,7 @@ void createGameCharacters() {
 }
 
 // Show game character attributes below game board
-void showGameCharacters() {
-
-  Alien alien;
-  Zombie zombie;
+void showGameCharacters(Alien &alien, vector<Zombie> &zombies) {
 
   cout << "-> Alien: life = " << alien.life << ", attack = " << alien.attack
        << std::endl;
@@ -294,16 +315,39 @@ void showGameCharacters() {
   cout << endl;
 }
 
-void updateGameBoard();
+void updateGameBoard(Alien &alien) { // updates imaginaryBoard
+  int x = alien.getX();
+  int y = alien.getY();
+  //  check what is in next box
+  cout << "Testing..." << endl;
+  printf("Really testing....\n");
+  printf("Alien coordinate: (%i, %i)\n", x, y);
+  cout << "What is in box above Alien: " << imaginaryBoard[y - 1][x] << endl;
+  pf::Pause();
+  // if (imaginaryBoard[row][col - 1] == '^') {
+  // cout << "It is an up arrow above me! -Alien" << endl;
+  //} else {
+  // cout << "It is something else!" << endl;
+  //};
+};
 
-void receiveCommand() {
+void receiveCommand(Alien &alien) {
   string command;
   cout << "<command> ";
   cin >> command;
   cout << endl;
 
+  // step 1: check box above and perform action, wall(out of bound) = stop,
+  // health = health +20, pod = attack nearest zombie -10, empty = continue go
+  // up
+  // step 2: regenerate board, place a trail . at alien current spot after
+  // every movement
+  // step 3: if empty, repeat step 1 & 2
+  // step 4: end alien turn, start zombie turn when wall is hit
   if (command == "up") {
     cout << "Alien is moving up!" << endl;
+    pf::Pause();
+    updateGameBoard(alien);
     pf::ClearScreen();
   }
   if (command == "down") {
@@ -325,14 +369,16 @@ void receiveCommand() {
 }
 
 int main() {
+  Alien alien;
+  vector<Zombie> zombies;
   // create a game loop
   generateGameSettings();
-  createGameBoard();
-  createGameCharacters();
+  createGameBoard(alien);
+  createGameCharacters(alien, zombies);
   while (gameOn) {
     showGameBoard();
-    showGameCharacters();
-    receiveCommand();
+    showGameCharacters(alien, zombies);
+    receiveCommand(alien);
   }
 
   return 0;
