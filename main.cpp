@@ -382,26 +382,17 @@ void checkNextBox(Alien &alien, string direction) {
   }
   switch (whatIsInTheBox) {
   case 'h':
-    // cout << "This is a health!" << endl;
-    // pf::Pause();
     //  leave a trail
     imaginaryBoard[y][x] = '.';
     // move alien to next box
     alien.move(alien, direction);
-    // show the gameboard
-    // showGameBoard();
     // pf::Pause();
     break;
   case 'p':
-    // cout << "This is a pod!" << endl;
-    // pf::Pause();
     //  leave a trail
     imaginaryBoard[y][x] = '.';
     // move alien to next box
     alien.move(alien, direction);
-    // show the gameboard
-    // showGameBoard();
-    // pf::Pause();
     break;
   case 'r':
     cout << "This is a rock!" << endl;
@@ -409,29 +400,18 @@ void checkNextBox(Alien &alien, string direction) {
   default:
     if (whatIsInTheBox == '^' || whatIsInTheBox == 'v' ||
         whatIsInTheBox == '<' || whatIsInTheBox == '>') {
-      // cout << "This is an arrow! Arrow of " << whatIsInTheBox << endl;
-      // pf::Pause();
       //  leave a trail
       imaginaryBoard[y][x] = '.';
       // move alien to next box
       alien.move(alien, direction);
-      // show the gameboard
-      showGameBoard();
-      // pf::Pause();
     } else {
-      // cout << "There is nothing!" << endl;
-      // pf::Pause();
       //  leave a trail
       imaginaryBoard[y][x] = '.';
       // move alien to next box
       alien.move(alien, direction);
-      // show the gameboard
-      showGameBoard();
-      // pf::Pause();
     }
     break;
   }
-  // pf::Pause();
 }
 
 void updateGameBoard(){
