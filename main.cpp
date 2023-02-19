@@ -82,7 +82,8 @@ void Alien::move(Alien &alien, string direction) {
     x++;
     imaginaryBoard[y][x] = 'A';
   } else { // error checker
-    cout << "There is an error! Alien could not move!" << endl;
+    // cout << "There is an error! Alien could not move!" << endl;
+    // pf::Pause()
     alien.setPos(x, y);
     imaginaryBoard[y][x] = 'A';
     playerTurn = 0;
@@ -105,7 +106,7 @@ public:
   int index;
 
   void setPos(int newX, int newY);
-  void move(Zombie &zombie);
+  void move(Zombie &zombie, vector<Zombie> &zombies);
   void display(vector<Zombie> &zombies);
   int getX() const;
   int getY() const;
@@ -114,16 +115,65 @@ private:
   int x_, y_;
 };
 
+void Zombie::setPos(int newX, int newY) {
+  x_ = newX;
+  y_ = newY;
+}
+void Zombie::move(Zombie &zombie, vector<Zombie> &zombies) {
+  srand(time(0));
+  string direction;
+  for (int i = 0; i < zombies.size(); i++) {
+    int x = zombies[i].getX();
+    int y = zombies[i].getY();
+    // remove direction where it will hit wall
+    if (y == 0) {
+      string directions[3] = {"down", "left", "right"};
+      direction = directions[rand() % 3];
+    }
+    if (y == BoardRows - 1) {
+      string directions[3] = {"down", "left", "right"};
+      direction = directions[rand() % 3];
+    }
+    if (x == 0) {
+      string directions[3] = {"down", "left", "right"};
+      direction = directions[rand() % 3];
+    }
+    if (x == BoardColumns - 1) {
+      string directions[3] = {"down", "left", "right"};
+      direction = directions[rand() % 3];
+    }
+    // move zombie
+    if (direction == "up" && y != 0) {
+      zombies[i].setPos(x, y - 1);
+      y--;
+      imaginaryBoard[y][x] = (char)(zombies[i].index + 48);
+    } else if (direction == "down" && y != BoardRows - 1) {
+      zombies[i].setPos(x, y + 1);
+      y++;
+      imaginaryBoard[y][x] = (char)(zombies[i].index + 48);
+    } else if (direction == "left" && x != 0) {
+      zombies[i].setPos(x - 1, y);
+      x--;
+      imaginaryBoard[y][x] = (char)(zombies[i].index + 48);
+    } else if (direction == "right" && x != BoardColumns - 1) {
+      zombies[i].setPos(x + 1, y);
+      x++;
+      imaginaryBoard[y][x] = (char)(zombies[i].index + 48);
+    } else { // error checker
+      cout << "There is an error! Zombie could not move!" << endl;
+      pf::Pause();
+      //  hits wall
+      zombies[i].move(zombie, zombies);
+    }
+    // check if alien in range, if is, attack
+  }
+}
 void Zombie::display(vector<Zombie> &zombies) {
   for (int i = 0; i < zombies.size(); i++) {
     printf("   Zombie %i : health = %i, attack = %i, range = %i\n",
            zombies[i].index, zombies[i].health, zombies[i].attack,
            zombies[i].range);
   }
-}
-void Zombie::setPos(int newX, int newY) {
-  x_ = newX;
-  y_ = newY;
 }
 int Zombie::getX() const { return x_; }
 int Zombie::getY() const { return y_; }
@@ -702,7 +752,12 @@ int main() {
       printf("%s\n", message.c_str());
       printf("Zombies will start moving now!\n");
       pf::Pause();
+      pf::ClearScreen();
+      zombie.move(zombie, zombies);
+      // check if alien is in zombie range, if is, attack!
       updateGameBoard(alien, zombie, zombies);
+      // check range
+      // if in range, attack
       playerTurn = 1;
     }
   }
