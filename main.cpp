@@ -10,7 +10,9 @@
 // *********************************************************
 
 #include "pf/helper.h"
+#include <cmath> // for sqrt() // a^2 = b^2 + c^2
 #include <iostream>
+#include <limits> // for numeric_limits
 #include <vector>
 
 // for receiving arrow key inputs
@@ -23,6 +25,7 @@
 using std::cin;
 using std::cout;
 using std::endl;
+using std::numeric_limits;
 using std::string;
 using std::vector;
 
@@ -64,7 +67,7 @@ void Alien::move(Alien &alien, string direction) {
     alien.setPos(x, y - 1);
     y--;
     imaginaryBoard[y][x] = 'A';
-  } else if (direction == "down" && y != BoardRows) {
+  } else if (direction == "down" && y != BoardRows - 1) {
     alien.setPos(x, y + 1);
     y++;
     imaginaryBoard[y][x] = 'A';
@@ -72,12 +75,12 @@ void Alien::move(Alien &alien, string direction) {
     alien.setPos(x - 1, y);
     x--;
     imaginaryBoard[y][x] = 'A';
-  } else if (direction == "right" && x != BoardColumns) {
+  } else if (direction == "right" && x != BoardColumns - 1) {
     alien.setPos(x + 1, y);
     x++;
     imaginaryBoard[y][x] = 'A';
   } else { // error checker
-           // cout << "There is an error! Alien could not move!" << endl;
+    cout << "There is an error! Alien could not move!" << endl;
     alien.setPos(x, y);
     imaginaryBoard[y][x] = 'A';
     playerTurn = 0;
@@ -347,6 +350,13 @@ void showGameBoard() {
   cout << endl;
 }
 
+// epic math time a^2 = b^2 + c^2
+int checkDistance(int x1, int y1, int x2, int y2) {
+  int answer;
+  answer = sqrt((y2 - y1) ^ 2 + (x2 - x1) ^ 2);
+  return answer;
+}
+
 void createGameCharacters(Alien &alien, Zombie &zombie,
                           vector<Zombie> &zombies) {
   srand(time(0));
@@ -371,22 +381,23 @@ void showGameCharacters(Alien &alien, Zombie &zombie, vector<Zombie> &zombies) {
   cout << endl;
 }
 
-void checkNextBox(Alien &alien, string direction) {
+void checkNextBox(Alien &alien, string direction, vector<Zombie> &zombies) {
   char whatIsInTheBox;
   int x = alien.getX();
   int y = alien.getY();
+  int distance = numeric_limits<int>::max();
+  int nearestZombieIndex;
   //  check what is in next box
-  if (direction == "up") {
+  if (direction == "up" && y != 0) {
     whatIsInTheBox = imaginaryBoard[y - 1][x];
-  }
-  if (direction == "down") {
+  } else if (direction == "down" && y < BoardRows - 1) {
     whatIsInTheBox = imaginaryBoard[y + 1][x];
-  }
-  if (direction == "left") {
+  } else if (direction == "left" && x != 0) {
     whatIsInTheBox = imaginaryBoard[y][x - 1];
-  }
-  if (direction == "right") {
+  } else if (direction == "right" && y < BoardColumns - 1) {
     whatIsInTheBox = imaginaryBoard[y][x + 1];
+  } else {
+    whatIsInTheBox = 'q';
   }
   switch (whatIsInTheBox) {
   case 'h':
@@ -396,15 +407,32 @@ void checkNextBox(Alien &alien, string direction) {
     alien.move(alien, direction);
     // increase alien health
     alien.life = alien.life + 20;
+    showGameBoard();
+    pf::Pause();
     break;
   case 'p':
     //  leave a trail
     imaginaryBoard[y][x] = '.';
     // move alien to next box
     alien.move(alien, direction);
+    // deal -10 damage to nearest zombie
+    // use a^2 = b^2 + c^2 math equation to find distance
+    for (int i = 0; i < zombies.size(); i++) {
+      int distance_ = checkDistance(alien.getX(), alien.getY(),
+                                    zombies[i].getX(), zombies[i].getY());
+      if (distance_ < distance) {
+        distance = distance_;
+        nearestZombieIndex = zombies[i].index;
+      }
+    }
+    zombies[nearestZombieIndex - 1].life =
+        zombies[nearestZombieIndex - 1].life - 10;
+    showGameBoard();
+    pf::Pause();
     break;
   case 'r':
     cout << "This is a rock!" << endl;
+    playerTurn = 0;
     break;
   default:
     if (whatIsInTheBox == '^' || whatIsInTheBox == 'v' ||
@@ -413,17 +441,22 @@ void checkNextBox(Alien &alien, string direction) {
       imaginaryBoard[y][x] = '.';
       // move alien to next box
       alien.move(alien, direction);
-    } else {
+      showGameBoard();
+      pf::Pause();
+    } else if (whatIsInTheBox == ' ') {
       //  leave a trail
       imaginaryBoard[y][x] = '.';
       // move alien to next box
       alien.move(alien, direction);
+      showGameBoard();
+      pf::Pause();
+    } else {
+      playerTurn = 0;
     }
-    break;
   }
 }
 
-void receiveCommand(Alien &alien) {
+void receiveCommand(Alien &alien, vector<Zombie> &zombies) {
   string command;
 #if defined(_WIN32)
 #define KEY_UP 72
@@ -452,6 +485,7 @@ void receiveCommand(Alien &alien) {
       command = "right"; // key right
       break;
     case 'q':
+      playerTurn = 0;
       gameOn = 0;
       break;
     case 'h':
@@ -478,6 +512,7 @@ void receiveCommand(Alien &alien) {
   cin >> c;
   if (c != 27) {
     if (c == 'q') {
+      playerTurn = 0;
       gameOn = 0;
     } else if (c == 'w') {
       printf("\nInstructions  :\n");
@@ -519,30 +554,32 @@ void receiveCommand(Alien &alien) {
 
   // step 1: check box ahead according to direction
   // step 2: if empty, repeat step 1
-  // step 3: perform action, wall(out of bound) = stop, health = health +20,
-  // pod = attack nearest zombie -10, empty = continue go ahead
-  // step 4: regenerate board, place a trail . at alien current spot after
-  // every movement
+  // step 3: perform action, wall(out of bound)/rock = stop, health = health
+  // +20, pod = attack nearest zombie -10, empty = continue go ahead
+  // step 4: regenerate board, place a trail . at alien current spot after every
+  // movement
   // step 5: end alien turn, start zombie turn when wall is hit
-  if (command == "up") {
-    checkNextBox(alien, command);
-    pf::ClearScreen();
-  }
-  if (command == "down") {
-    checkNextBox(alien, command);
-    pf::ClearScreen();
-  }
-  if (command == "left") {
-    checkNextBox(alien, command);
-    pf::ClearScreen();
-  }
-  if (command == "right") {
-    checkNextBox(alien, command);
-    pf::ClearScreen();
-  }
-  if (command == "quit") {
-    cout << "Thank you for playing the game!" << endl;
-    gameOn = 0;
+  while (playerTurn) {
+    if (command == "up") {
+      checkNextBox(alien, command, zombies);
+      pf::ClearScreen();
+    }
+    if (command == "down") {
+      checkNextBox(alien, command, zombies);
+      pf::ClearScreen();
+    }
+    if (command == "left") {
+      checkNextBox(alien, command, zombies);
+      pf::ClearScreen();
+    }
+    if (command == "right") {
+      checkNextBox(alien, command, zombies);
+      pf::ClearScreen();
+    }
+    if (command == "quit") {
+      cout << "Thank you for playing the game!" << endl;
+      gameOn = 0;
+    }
   }
 }
 
@@ -559,10 +596,15 @@ int main() {
     if (playerTurn == 1) {
       showGameBoard();
       showGameCharacters(alien, zombie, zombies);
-      receiveCommand(alien);
+      receiveCommand(alien, zombies);
     } else { // Zombie turn
+      printf("Zombies will start moving now!\n");
+      // updateGameBoard(); // remove trails and regenerate game objects
+      // while keeping alien and zombie location
       showGameBoard();
+      showGameCharacters(alien, zombie, zombies);
       pf::Pause();
+      // playerTurn = 1;
       break;
     }
   }
