@@ -11,6 +11,7 @@
 
 #include "pf/helper.h"
 #include <cmath> // for sqrt() // a^2 = b^2 + c^2
+#include <cstring>
 #include <iostream>
 #include <limits> // for numeric_limits
 #include <vector>
@@ -39,6 +40,8 @@ vector<vector<char>> imaginaryBoard;
 bool gameOn = 1;
 bool playerTurn = 1;
 string message;
+char newOrLoadGame;
+char preferredInput = '1';
 
 // epic math time a^2 = b^2 + c^2
 int checkDistance(int x1, int y1, int x2, int y2) {
@@ -175,10 +178,10 @@ void Zombie::move(Alien &alien, Zombie &zombie, vector<Zombie> &zombies) {
       x++;
       imaginaryBoard[y][x] = (char)(zombies[i].index + 48);
     } else { // error checker
-      cout << "There is an error! Zombie could not move!" << endl;
-      pf::Pause();
-      printf("Zombie %i at (%i, %i) can't move!\n", zombies[i].index,
-             zombies[i].getX(), zombies[i].getY());
+      // cout << "There is an error! Zombie could not move!" << endl;
+      // pf::Pause();
+      // printf("Zombie %i at (%i, %i) can't move!\n", zombies[i].index,
+      // zombies[i].getX(), zombies[i].getY());
       //     hits wall
       // zombies[i].move(alien, zombie, zombies);
     }
@@ -213,6 +216,31 @@ struct gameObj {
 gameObj gameObj = {' ', '^', 'v', '<', '>', 'h', 'p', 'r'};
 // access it with gameObj.health for example, to replace objects in board
 
+// Welcome Menu
+void welcomeMenu() {
+  while (true) {
+    pf::ClearScreen();
+    cout << endl;
+    cout << "+---------------------------------------------+" << endl;
+    cout << "|               ALIEN VS ZOMBIE               |" << endl;
+    cout << "|=============================================|" << endl;
+    cout << "| Select:                                     |" << endl;
+    cout << "|    1 => New Game                            |" << endl;
+    cout << "|    2 => Load Game                           |" << endl;
+    cout << "|---------------------------------------------|" << endl;
+    cout << "|    Q => Quit                                |" << endl;
+    cout << "+---------------------------------------------+" << endl;
+    cout << endl;
+    cout << "Choice => ";
+    cin >> newOrLoadGame;
+    if (newOrLoadGame == '1' || newOrLoadGame == '2' ||
+        toupper(newOrLoadGame) == 'Q') {
+      pf::ClearScreen();
+      break;
+    }
+  }
+}
+
 // Game Settings
 void generateGameSettings() {
   string acceptedStrings[2] = {"y", "n"};
@@ -223,12 +251,22 @@ void generateGameSettings() {
   cout << "Board Rows    : " << BoardRows << endl;
   cout << "Board Columns : " << BoardColumns << endl;
   cout << "Zombie Count  : " << ZombieCount << endl;
+  cout << "Prefer Input  : " << preferredInput << endl;
+  cout << "(1 - Arrow Keys, 2 - Type Commands)" << endl;
   cout << endl;
   cout << "Do you wish to change the game default settings (y/n)? => ";
   cin >> changeSettings;
 
   if (toupper(changeSettings) == 'Y') {
     pf::ClearScreen();
+    // Receive input for input settings
+    cout << "Input Settings" << endl;
+    cout << "----------------" << endl;
+    cout << "(1 - Arrow Keys, 2 - Type Commands)" << endl;
+    cout << "Input type => ";
+    cin >> preferredInput;
+    cout << endl;
+
     // Receive input for board rows
     int input;
     cout << "Board Settings" << endl;
@@ -623,120 +661,151 @@ void checkNextBox(Alien &alien, Zombie &zombie, string &direction,
 
 void receiveCommand(Alien &alien, Zombie &zombie, vector<Zombie> &zombies) {
   string command;
+  if (preferredInput == '1') { // Arrow key
 #if defined(_WIN32)
 #define KEY_UP 72
 #define KEY_LEFT 75
 #define KEY_RIGHT 77
 #define KEY_DOWN 80
-  cout << "<command> ";
-  c = getch();
-  if (c && c != 224) {
-    cout << endl << "Not arrow: " << (char)c << endl;
-  } else {
-    switch (
-        ex = getch()) { // small bug: as arrow key return a scan code of two
-                        // characters, (0) or (224), "H", "K", "M", and "P" are
-                        // misinterpreted as "Up", "Down", "Left", and "Right"
-    case KEY_UP /* H */:
-      command = "up"; // key up
-      break;
-    case KEY_DOWN /* K */:
-      command = "down"; // key down
-      break;
-    case KEY_LEFT /* M */:
-      command = "left"; // key left
-      break;
-    case KEY_RIGHT:      /* P */
-      command = "right"; // key right
-      break;
-    case 'q':
-      playerTurn = 0;
-      gameOn = 0;
-      break;
-    case 'h':
-      printf("\nInstructions  :\n");
-      printf("1. arrow keys/hjkl -> move alien\n");
-      printf("2. q -> quit\n");
-      printf("3. h -> display help message\n");
-      pf::Pause();
-    default:
-      cout << endl << (char)ex << endl; // not arrow
-      break;
+    cout << "<command> ";
+    c = getch();
+    if (c && c != 224) {
+      cout << endl << "Not arrow: " << (char)c << endl;
+    } else {
+      switch (
+          ex =
+              getch()) { // small bug: as arrow key return a scan code of two
+                         // characters, (0) or (224), "H", "K", "M", and "P" are
+                         // misinterpreted as "Up", "Down", "Left", and "Right"
+      case KEY_UP /* H */:
+        command = "up"; // key up
+        break;
+      case KEY_DOWN /* K */:
+        command = "down"; // key down
+        break;
+      case KEY_LEFT /* M */:
+        command = "left"; // key left
+        break;
+      case KEY_RIGHT:      /* P */
+        command = "right"; // key right
+        break;
+      case 'q':
+        playerTurn = 0;
+        gameOn = 0;
+        break;
+      case 'h':
+        printf("\nInstructions  :\n");
+        printf("1. arrow keys/hjkl -> move alien\n");
+        printf("2. q -> quit\n");
+        printf("3. h -> display help message\n");
+        pf::Pause();
+        pf::ClearScreen();
+        showGameBoard();
+        showGameCharacters(alien, zombie, zombies);
+        receiveCommand(alien, zombie, zombies);
+      default:
+        cout << endl << (char)ex << endl; // not arrow
+        break;
+      }
     }
-  }
 #elif defined(__linux__) || defined(__APPLE__)
 // Black magic to prevent Linux from buffering keystrokes.
 #define STDIN_FILENO 0
-  struct termios t;
-  tcgetattr(STDIN_FILENO, &t);
-  t.c_lflag &= ~ICANON;
-  tcsetattr(STDIN_FILENO, TCSANOW, &t);
+    struct termios t;
+    tcgetattr(STDIN_FILENO, &t);
+    t.c_lflag &= ~ICANON;
+    tcsetattr(STDIN_FILENO, TCSANOW, &t);
 
-  while (true) {
-    cout << "<command> ";
-    char c, d, e;
-    cin >> c;
-    if (c == 'q') {
-      playerTurn = 0;
-      gameOn = 0;
-      break;
-    } else if (c == 'w') {
-      printf("\nInstructions  :\n");
-      printf("1. arrow keys/hjkl -> move alien\n");
-      printf("2. q -> quit\n");
-      printf("3. w -> display help message\n");
-      pf::Pause();
-      pf::ClearScreen();
-      showGameBoard();
-      showGameCharacters(alien, zombie, zombies);
-      receiveCommand(alien, zombie, zombies);
-    } else if (c == 'h') {
-      command = "left";
-      break;
-    } else if (c == 'j') {
-      command = "down";
-      break;
-    } else if (c == 'k') {
-      command = "up";
-      break;
-    } else if (c == 'l') {
-      command = "right";
-      break;
-    } else if (c == 27) {
-      cin >> d;
-      if (d != 91) {
-        cout << "Error! Please do not press Esc!" << endl;
-        cin >> c;
+    while (true) {
+      cout << "<command> ";
+      char c, d, e;
+      cin >> c;
+      if (c == 'q') {
+        playerTurn = 0;
+        gameOn = 0;
+        break;
+      } else if (c == 'w') {
+        printf("\nInstructions  :\n");
+        printf("1. arrow keys/hjkl -> move alien\n");
+        printf("2. q -> quit\n");
+        printf("3. h -> display help message\n");
+        pf::Pause();
+        pf::ClearScreen();
+        showGameBoard();
+        showGameCharacters(alien, zombie, zombies);
+        receiveCommand(alien, zombie, zombies);
+      } else if (c == 27) {
         cin >> d;
-        cin >> e;
+        if (d != 91) {
+          cout << "Error! Please do not press Esc!" << endl;
+          cin >> c;
+          cin >> d;
+          cin >> e;
+        } else {
+          cin >> e;
+        }
       } else {
-        cin >> e;
+        cout << "ERROR! No Input received." << endl;
       }
-    } else {
-      cout << "ERROR! No Input received." << endl;
-    }
 
-    if ((c == 27) && (d == 91)) {
-      if (e == 65) {
-        command = "up";
+      if ((c == 27) && (d == 91)) {
+        if (e == 65) {
+          command = "up";
+          break;
+        }
+        if (e == 66) {
+          command = "down";
+          break;
+        }
+        if (e == 67) {
+          command = "right";
+          break;
+        }
+        if (e == 68) {
+          command = "left";
+          break;
+        }
+      }
+    }
+#endif
+
+  } else if (preferredInput == '2') { // Input commands
+    while (true) {
+      cout << "<command> ";
+      cin >> command;
+      // convert string to lowercase
+      for (int i = 0; i < command.length(); i++) {
+        command[i] = tolower(command[i]);
+      }
+      if (command == "up") {
         break;
       }
-      if (e == 66) {
-        command = "down";
+      if (command == "down") {
         break;
       }
-      if (e == 67) {
-        command = "right";
+      if (command == "left") {
         break;
       }
-      if (e == 68) {
-        command = "left";
+      if (command == "right") {
         break;
+      }
+      if (command == "quit") {
+        playerTurn = 0;
+        gameOn = 0;
+        break;
+      } else if (command == "help") {
+        printf("\nInstructions  :\n");
+        printf("1. arrow keys/hjkl -> move alien\n");
+        printf("2. q -> quit\n");
+        printf("3. h -> display help message\n");
+        pf::Pause();
+        pf::ClearScreen();
+        showGameBoard();
+        showGameCharacters(alien, zombie, zombies);
+        receiveCommand(alien, zombie, zombies);
       }
     }
   }
-#endif
-
   cout << endl;
 
   // step 1: check box ahead according to direction
@@ -780,9 +849,15 @@ int main() {
   Zombie zombie;
   vector<Zombie> zombies;
   // Game start
-  generateGameSettings();
-  createGameCharacters(alien, zombie, zombies);
-  createGameBoard(alien, zombie, zombies);
+  welcomeMenu();
+  if (newOrLoadGame == '1') {
+    generateGameSettings();
+    createGameCharacters(alien, zombie, zombies);
+    createGameBoard(alien, zombie, zombies);
+  } else if (newOrLoadGame == '2') {
+    gameOn = 0;
+  }
+
   // create a game loop
   while (gameOn) {
     if (playerTurn == 1) {
