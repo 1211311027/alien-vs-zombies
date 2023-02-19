@@ -138,15 +138,15 @@ void Zombie::move(Alien &alien, Zombie &zombie, vector<Zombie> &zombies) {
       direction = directions[rand() % 3];
     }
     if (y == BoardRows - 1) {
-      string directions[3] = {"down", "left", "right"};
+      string directions[3] = {"up", "left", "right"};
       direction = directions[rand() % 3];
     }
     if (x == 0) {
-      string directions[3] = {"down", "left", "right"};
+      string directions[3] = {"up", "down", "right"};
       direction = directions[rand() % 3];
     }
     if (x == BoardColumns - 1) {
-      string directions[3] = {"down", "left", "right"};
+      string directions[3] = {"up", "down", "left"};
       direction = directions[rand() % 3];
     }
     // move zombie
@@ -167,9 +167,9 @@ void Zombie::move(Alien &alien, Zombie &zombie, vector<Zombie> &zombies) {
       x++;
       imaginaryBoard[y][x] = (char)(zombies[i].index + 48);
     } else { // error checker
-      // cout << "There is an error! Zombie could not move!" << endl;
+             // cout << "There is an error! Zombie could not move!" << endl;
       // pf::Pause();
-      //   hits wall
+      //     hits wall
       // zombies[i].move(alien, zombie, zombies);
     }
     // check if alien in range, if is, attack
