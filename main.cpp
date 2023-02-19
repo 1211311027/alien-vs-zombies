@@ -40,6 +40,13 @@ bool gameOn = 1;
 bool playerTurn = 1;
 string message;
 
+// epic math time a^2 = b^2 + c^2
+int checkDistance(int x1, int y1, int x2, int y2) {
+  int answer;
+  answer = sqrt((y2 - y1) ^ 2 + (x2 - x1) ^ 2);
+  return answer;
+}
+
 // Game Characters
 // All Character
 class Character {
@@ -106,7 +113,7 @@ public:
   int index;
 
   void setPos(int newX, int newY);
-  void move(Zombie &zombie, vector<Zombie> &zombies);
+  void move(Alien &alien, Zombie &zombie, vector<Zombie> &zombies);
   void display(vector<Zombie> &zombies);
   int getX() const;
   int getY() const;
@@ -119,7 +126,7 @@ void Zombie::setPos(int newX, int newY) {
   x_ = newX;
   y_ = newY;
 }
-void Zombie::move(Zombie &zombie, vector<Zombie> &zombies) {
+void Zombie::move(Alien &alien, Zombie &zombie, vector<Zombie> &zombies) {
   srand(time(0));
   string direction;
   for (int i = 0; i < zombies.size(); i++) {
@@ -160,12 +167,19 @@ void Zombie::move(Zombie &zombie, vector<Zombie> &zombies) {
       x++;
       imaginaryBoard[y][x] = (char)(zombies[i].index + 48);
     } else { // error checker
-      cout << "There is an error! Zombie could not move!" << endl;
-      pf::Pause();
-      //  hits wall
-      zombies[i].move(zombie, zombies);
+      // cout << "There is an error! Zombie could not move!" << endl;
+      // pf::Pause();
+      //   hits wall
+      // zombies[i].move(alien, zombie, zombies);
     }
     // check if alien in range, if is, attack
+    for (int i = 0; i < zombies.size(); i++) {
+      int num = checkDistance(alien.getX(), alien.getY(), zombies[i].getX(),
+                              zombies[i].getY());
+      if (num <= zombies[i].range) {
+        alien.health = alien.health - zombies[i].attack;
+      }
+    }
   }
 }
 void Zombie::display(vector<Zombie> &zombies) {
@@ -446,13 +460,6 @@ void showGameBoard() {
   cout << endl;
 }
 
-// epic math time a^2 = b^2 + c^2
-int checkDistance(int x1, int y1, int x2, int y2) {
-  int answer;
-  answer = sqrt((y2 - y1) ^ 2 + (x2 - x1) ^ 2);
-  return answer;
-}
-
 void createGameCharacters(Alien &alien, Zombie &zombie,
                           vector<Zombie> &zombies) {
   srand(time(0));
@@ -652,45 +659,67 @@ void receiveCommand(Alien &alien, Zombie &zombie, vector<Zombie> &zombies) {
   t.c_lflag &= ~ICANON;
   tcsetattr(STDIN_FILENO, TCSANOW, &t);
 
-  char c, d, e;
-  cout << "<command> ";
-  cin >> c;
-  if (c != 27) {
+  while (true) {
+    cout << "<command> ";
+    char c, d, e;
+    cin >> c;
     if (c == 'q') {
       playerTurn = 0;
       gameOn = 0;
+      break;
     } else if (c == 'w') {
       printf("\nInstructions  :\n");
       printf("1. arrow keys/hjkl -> move alien\n");
       printf("2. q -> quit\n");
       printf("3. w -> display help message\n");
       pf::Pause();
+      pf::ClearScreen();
+      showGameBoard();
+      showGameCharacters(alien, zombie, zombies);
+      receiveCommand(alien, zombie, zombies);
     } else if (c == 'h') {
       command = "left";
+      break;
     } else if (c == 'j') {
       command = "down";
+      break;
     } else if (c == 'k') {
       command = "up";
+      break;
     } else if (c == 'l') {
       command = "right";
+      break;
+    } else if (c == 27) {
+      cin >> d;
+      if (d != 91) {
+        cout << "Error! Please do not press Esc!" << endl;
+        cin >> c;
+        cin >> d;
+        cin >> e;
+      } else {
+        cin >> e;
+      }
+    } else {
+      cout << "ERROR! No Input received." << endl;
     }
-  } else {
-    cin >> d;
-    cin >> e;
-  }
 
-  if ((c == 27) && (d == 91)) {
-    if (e == 65) {
-      command = "up";
-    }
-    if (e == 66) {
-      command = "down";
-    }
-    if (e == 67) {
-      command = "right";
-    }
-    if (e == 68) {
-      command = "left";
+    if ((c == 27) && (d == 91)) {
+      if (e == 65) {
+        command = "up";
+        break;
+      }
+      if (e == 66) {
+        command = "down";
+        break;
+      }
+      if (e == 67) {
+        command = "right";
+        break;
+      }
+      if (e == 68) {
+        command = "left";
+        break;
+      }
     }
   }
 #endif
@@ -753,7 +782,7 @@ int main() {
       printf("Zombies will start moving now!\n");
       pf::Pause();
       pf::ClearScreen();
-      zombie.move(zombie, zombies);
+      zombie.move(alien, zombie, zombies);
       // check if alien is in zombie range, if is, attack!
       updateGameBoard(alien, zombie, zombies);
       // check range
