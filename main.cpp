@@ -33,6 +33,7 @@ int ZombieCount = 1;
 char changeSettings;
 vector<vector<char>> imaginaryBoard;
 bool gameOn = 1;
+bool playerTurn = 1;
 
 // Game Characters
 // All Character
@@ -76,7 +77,10 @@ void Alien::move(Alien &alien, string direction) {
     x++;
     imaginaryBoard[y][x] = 'A';
   } else { // error checker
-    cout << "There is an error! Alien could not move!" << endl;
+           // cout << "There is an error! Alien could not move!" << endl;
+    alien.setPos(x, y);
+    imaginaryBoard[y][x] = 'A';
+    playerTurn = 0;
   }
 };
 void Alien::display(Alien &alien) {
@@ -361,12 +365,21 @@ void showGameCharacters(Alien &alien, Zombie &zombie, vector<Zombie> &zombies) {
 
 void checkNextBox(Alien &alien, string direction) {
   char whatIsInTheBox;
-  string arrows = "^v<>";
-  vector<char> arrow(arrows.c_str(), arrows.c_str() + arrows.size() + 1);
   int x = alien.getX();
   int y = alien.getY();
   //  check what is in next box
-  whatIsInTheBox = imaginaryBoard[y - 1][x];
+  if (direction == "up") {
+    whatIsInTheBox = imaginaryBoard[y - 1][x];
+  }
+  if (direction == "down") {
+    whatIsInTheBox = imaginaryBoard[y + 1][x];
+  }
+  if (direction == "left") {
+    whatIsInTheBox = imaginaryBoard[y][x - 1];
+  }
+  if (direction == "right") {
+    whatIsInTheBox = imaginaryBoard[y][x + 1];
+  }
   switch (whatIsInTheBox) {
   case 'h':
     // cout << "This is a health!" << endl;
@@ -376,7 +389,7 @@ void checkNextBox(Alien &alien, string direction) {
     // move alien to next box
     alien.move(alien, direction);
     // show the gameboard
-    showGameBoard();
+    // showGameBoard();
     // pf::Pause();
     break;
   case 'p':
@@ -387,7 +400,7 @@ void checkNextBox(Alien &alien, string direction) {
     // move alien to next box
     alien.move(alien, direction);
     // show the gameboard
-    showGameBoard();
+    // showGameBoard();
     // pf::Pause();
     break;
   case 'r':
@@ -418,7 +431,7 @@ void checkNextBox(Alien &alien, string direction) {
     }
     break;
   }
-  pf::Pause();
+  // pf::Pause();
 }
 
 void updateGameBoard(){
@@ -525,9 +538,15 @@ int main() {
   createGameBoard(alien);
   createGameCharacters(alien, zombie, zombies);
   while (gameOn) {
-    showGameBoard();
-    showGameCharacters(alien, zombie, zombies);
-    receiveCommand(alien);
+    if (playerTurn == 1) {
+      showGameBoard();
+      showGameCharacters(alien, zombie, zombies);
+      receiveCommand(alien);
+    } else { // Zombie turn
+      showGameBoard();
+      pf::Pause();
+      break;
+    }
   }
 
   return 0;
