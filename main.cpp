@@ -11,8 +11,14 @@
 
 #include "pf/helper.h"
 #include <iostream>
-#include <termios.h> // for receiving arrow key inputs
 #include <vector>
+
+// for receiving arrow key inputs
+#if defined(_WIN32)
+#include <conio.h>
+#elif defined(__linux__) || defined(__APPLE__)
+#include <termios.h>
+#endif
 // using namespace std;
 using std::cin;
 using std::cout;
@@ -420,6 +426,35 @@ void updateGameBoard(){
 };
 
 void receiveCommand(Alien &alien) {
+  string command;
+#if defined(_WIN32)
+  cout << "<command> ";
+  c = getch();
+  if (c && c != 224) {
+    cout << endl << "Not arrow: " << (char)c << endl;
+  } else {
+    switch (
+        ex = getch()) { // small bug: as arrow key return a scan code of two
+                        // characters, (0) or (224), "H", "K", "M", and "P" are
+                        // misinterpreted as "Up", "Down", "Left", and "Right"
+    case KEY_UP /* H */:
+      command = "up"; // key up
+      break;
+    case KEY_DOWN /* K */:
+      command = "up"; // key down
+      break;
+    case KEY_LEFT /* M */:
+      command = "left"; // key left
+      break;
+    case KEY_RIGHT:      /* P */
+      command = "right"; // key right
+      break;
+    default:
+      cout << endl << (char)ex << endl; // not arrow
+      break;
+    }
+  }
+#elif defined(__linux__) || defined(__APPLE__)
 // Black magic to prevent Linux from buffering keystrokes.
 #define STDIN_FILENO 0
   struct termios t;
@@ -427,32 +462,29 @@ void receiveCommand(Alien &alien) {
   t.c_lflag &= ~ICANON;
   tcsetattr(STDIN_FILENO, TCSANOW, &t);
 
-  string command;
   char c, d, e;
   cout << "<command> ";
   cin >> c;
   cin >> d;
   cin >> e;
-  cout << endl;
 
   if ((c == 27) && (d == 91)) {
     if (e == 65) {
-      // cout << "UP";
       command = "up";
     }
     if (e == 66) {
-      // cout << "DOWN";
       command = "down";
     }
     if (e == 67) {
-      // cout << "RIGHT";
       command = "right";
     }
     if (e == 68) {
-      // cout << "LEFT";
       command = "left";
     }
   }
+#endif
+
+  cout << endl;
 
   // step 1: check box ahead according to direction
   // step 2: if empty, repeat step 1
