@@ -11,8 +11,15 @@
 
 #include "pf/helper.h"
 #include <iostream>
+#include <stdio.h>
+#include <string.h>
 #include <vector>
-using namespace std;
+// using namespace std;
+using std::cin;
+using std::cout;
+using std::endl;
+using std::string;
+using std::vector;
 
 // Global scope variables
 int BoardRows = 5;
@@ -34,9 +41,9 @@ public:
 // Player
 class Alien : public Character {
 public:
+  void move(Alien &alien);
+  void display(Alien &alien);
   void setPos(int newX, int newY);
-  void move();
-  void display();
   int getX() const;
   int getY() const;
 
@@ -44,6 +51,13 @@ private:
   int x_, y_;
 };
 
+void Alien::move(Alien &alien){
+
+};
+void Alien::display(Alien &alien) {
+  cout << "-> Alien: life = " << alien.life << ", attack = " << alien.attack
+       << std::endl;
+}
 void Alien::setPos(int newX, int newY) {
   x_ = newX;
   y_ = newY;
@@ -56,8 +70,8 @@ class Zombie : public Character {
 public:
   int x, y;
   void setPos(int newX, int newY);
-  void move();
-  void display();
+  void move(Zombie &zombie);
+  void display(vector<Zombie> &zombies);
   int getX() const;
   int getY() const;
 
@@ -65,6 +79,12 @@ private:
   int x_, y_;
 };
 
+void Zombie::display(vector<Zombie> &zombies) {
+  for (int i = 0; i < ZombieCount; i++) {
+    printf("   Zombie %i : life = %i, attack = %i, range = %i\n", i + 1,
+           zombies[i].life, zombies[i].attack, zombies[i].range);
+  }
+}
 void Zombie::setPos(int newX, int newY) {
   x_ = newX;
   y_ = newY;
@@ -195,7 +215,9 @@ void createGameBoard(Alien &alien) {
   // h - health
   // p - pod
   // r - rock
-  vector<char> gameObj = {' ', '^', 'v', '<', '>', 'h', 'p', 'r'};
+  // add more spaces to increase chances of empty spaces
+  vector<char> gameObj = {' ', ' ', ' ', ' ', '^', 'v',
+                          '<', '>', 'h', 'p', 'r'};
   // Add zombies
   // **POSSIBILITY OF BUG**: random number doesnt reach the largest number and
   // spawn less zombie
@@ -286,12 +308,11 @@ void showGameBoard() {
   cout << endl;
 }
 
-void createGameCharacters(Alien &alien, vector<Zombie> &zombies) {
+void createGameCharacters(Alien &alien, Zombie &zombie,
+                          vector<Zombie> &zombies) {
   srand(time(0));
-  // Initialize characters
-  Zombie zombie;
   // Create alien attributes
-  alien.life = 100;
+  alien.life = (rand() % 4 + 1) * 50;
   alien.attack = 0;
   alien.range = 1;
   // Create zombie attributes
@@ -304,31 +325,53 @@ void createGameCharacters(Alien &alien, vector<Zombie> &zombies) {
 }
 
 // Show game character attributes below game board
-void showGameCharacters(Alien &alien, vector<Zombie> &zombies) {
-
-  cout << "-> Alien: life = " << alien.life << ", attack = " << alien.attack
-       << std::endl;
-  for (int i = 0; i < ZombieCount; i++) {
-    printf("   Zombie %i : life = %i, attack = %i, range = %i\n", i + 1,
-           zombies[i].life, zombies[i].attack, zombies[i].range);
-  }
+void showGameCharacters(Alien &alien, Zombie &zombie, vector<Zombie> &zombies) {
+  alien.display(alien);
+  zombie.display(zombies);
   cout << endl;
 }
 
-void updateGameBoard(Alien &alien) { // updates imaginaryBoard
+void checkNextBox(Alien &alien, string direction) {
+  char whatIsInTheBox;
+  string arrows = "^v<>";
+  vector<char> arrow(arrows.c_str(), arrows.c_str() + arrows.size() + 1);
   int x = alien.getX();
   int y = alien.getY();
   //  check what is in next box
-  cout << "Testing..." << endl;
-  printf("Really testing....\n");
-  printf("Alien coordinate: (%i, %i)\n", x, y);
-  cout << "What is in box above Alien: " << imaginaryBoard[y - 1][x] << endl;
+  // cout << "Testing..." << endl;
+  // printf("Really testing....\n");
+  // printf("Alien coordinate: (%i, %i)\n", x, y);
+  // cout << "What is in box above Alien: " << imaginaryBoard[y - 1][x] << endl;
+  whatIsInTheBox = imaginaryBoard[y - 1][x];
+  switch (whatIsInTheBox) {
+  case 'h':
+    cout << "This is a health!" << endl;
+    break;
+  case 'p':
+    cout << "This is a pod!" << endl;
+    break;
+  case 'r':
+    cout << "This is a rock!" << endl;
+    break;
+  default:
+    if (whatIsInTheBox == '^' || whatIsInTheBox == 'v' ||
+        whatIsInTheBox == '<' || whatIsInTheBox == '>') {
+      cout << "This is an arrow! Arrow of " << whatIsInTheBox << endl;
+    } else {
+      cout << "There is nothing!" << endl;
+    }
+    break;
+  }
   pf::Pause();
   // if (imaginaryBoard[row][col - 1] == '^') {
   // cout << "It is an up arrow above me! -Alien" << endl;
   //} else {
   // cout << "It is something else!" << endl;
   //};
+}
+
+void updateGameBoard(){
+    // updates imaginaryBoard
 };
 
 void receiveCommand(Alien &alien) {
@@ -347,19 +390,25 @@ void receiveCommand(Alien &alien) {
   if (command == "up") {
     cout << "Alien is moving up!" << endl;
     pf::Pause();
-    updateGameBoard(alien);
+    checkNextBox(alien, "up");
     pf::ClearScreen();
   }
   if (command == "down") {
     cout << "Alien is moving down!" << endl;
+    pf::Pause();
+    checkNextBox(alien, "down");
     pf::ClearScreen();
   }
   if (command == "left") {
     cout << "Alien is moving to the left!" << endl;
+    pf::Pause();
+    checkNextBox(alien, "left");
     pf::ClearScreen();
   }
   if (command == "right") {
     cout << "Alien is moving to the right!" << endl;
+    pf::Pause();
+    checkNextBox(alien, "right");
     pf::ClearScreen();
   }
   if (command == "quit") {
@@ -369,15 +418,17 @@ void receiveCommand(Alien &alien) {
 }
 
 int main() {
+  // Initialize characters
   Alien alien;
+  Zombie zombie;
   vector<Zombie> zombies;
   // create a game loop
   generateGameSettings();
   createGameBoard(alien);
-  createGameCharacters(alien, zombies);
+  createGameCharacters(alien, zombie, zombies);
   while (gameOn) {
     showGameBoard();
-    showGameCharacters(alien, zombies);
+    showGameCharacters(alien, zombie, zombies);
     receiveCommand(alien);
   }
 
