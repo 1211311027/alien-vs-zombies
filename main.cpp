@@ -34,21 +34,18 @@ public:
 // Player
 class Alien : public Character {
 public:
-  Alien() {
-    life = 100;
-    attack = 0;
-  }
+  int x, y;
+  Alien() { life = 100, attack = 0; }
 };
 // Zombie
 class Zombie : public Character {
+
 public:
-  Zombie() { // problem: multiple zombies still share the same attributes
-    srand(time(0));
-    life = (rand() % 5 + 1) * 50;
-    attack = (rand() % 3 + 1) * 5;
-    range = rand() % 3 + 1;
-  }
+  int x, y;
+  Zombie() { life = 100, attack = 10, range = 3; }
 };
+// vector of all zombies
+vector<Zombie> zombies;
 
 // Game Objects
 struct gameObj {
@@ -161,8 +158,8 @@ void GenerateGameSettings() {
 void CreateGameBoard() {
   // Randomize seed
   // srand(time(0));
-  // Initialize centerRow and centerColumn to calculate center of board to place
-  // Alien
+  // Initialize centerRow and centerColumn
+  // to calculate center of board to place Alien
   int centerRow = BoardRows / 2;
   int centerColumn = BoardColumns / 2;
 
@@ -188,7 +185,10 @@ void CreateGameBoard() {
 
       int random_number = rand() % gameObj.size();
       if (row == centerRow && col == centerColumn) {
-        imaginaryBoard[row][col] = 'A';
+        Alien alien;
+        alien.x = centerColumn;
+        alien.y = centerRow;
+        imaginaryBoard[centerRow][centerColumn] = 'A';
         // cout << imaginaryBoard[row][col];
       } else if (random_number >= 8 && gameObj.size() >= 8) {
         // when random_number is 8th or above
@@ -261,9 +261,26 @@ void ShowGameBoard() {
   cout << endl;
 }
 
+void CreateGameCharacters() {
+  srand(time(0));
+  // Initialize characters
+  Alien alien;
+  Zombie zombie;
+  // Create alien attributes
+  alien.life = 100;
+  alien.attack = 0;
+  alien.range = 1;
+  // Create zombie attributes
+  for (int i = 0; i < ZombieCount; i++) {
+    zombie.life = (rand() % 4 + 1) * 50;
+    zombie.attack = (rand() % 3 + 1) * 5;
+    zombie.range = rand() % 5 + 1;
+    zombies.push_back(zombie);
+  }
+}
+
 // Show game character attributes below game board
 void ShowGameCharacters() {
-  // srand(time(0));
 
   Alien alien;
   Zombie zombie;
@@ -271,12 +288,8 @@ void ShowGameCharacters() {
   cout << "-> Alien: life = " << alien.life << ", attack = " << alien.attack
        << std::endl;
   for (int i = 0; i < ZombieCount; i++) {
-    // problem: multiple zombies share the same attributes
-    // alien.life = (rand() % 5 + 1) * 50;
-    // alien.attack = (rand() % 3 + 1) * 5;
-    // alien.range = rand() % 10 + 1;
     printf("   Zombie %i : life = %i, attack = %i, range = %i\n", i + 1,
-           zombie.life, zombie.attack, zombie.range);
+           zombies[i].life, zombies[i].attack, zombies[i].range);
   }
   cout << endl;
 }
@@ -289,15 +302,19 @@ void receiveCommand() {
 
   if (command == "up") {
     cout << "Alien is moving up!" << endl;
+    pf::ClearScreen();
   }
   if (command == "down") {
     cout << "Alien is moving down!" << endl;
+    pf::ClearScreen();
   }
   if (command == "left") {
     cout << "Alien is moving to the left!" << endl;
+    pf::ClearScreen();
   }
   if (command == "right") {
     cout << "Alien is moving to the right!" << endl;
+    pf::ClearScreen();
   }
   if (command == "quit") {
     cout << "Thank you for playing the game!" << endl;
@@ -309,11 +326,11 @@ int main() {
   // create a game loop
   GenerateGameSettings();
   CreateGameBoard();
+  CreateGameCharacters();
   while (gameOn) {
     ShowGameBoard();
     ShowGameCharacters();
     receiveCommand();
-    pf::Pause();
   }
 
   return 0;
