@@ -12,6 +12,7 @@
 #include "pf/helper.h"
 #include <cmath> // for sqrt() // a^2 = b^2 + c^2
 #include <cstring>
+#include <fstream> // for saving file
 #include <iostream>
 #include <limits> // for numeric_limits
 #include <vector>
@@ -27,6 +28,7 @@ using std::cin;
 using std::cout;
 using std::endl;
 using std::numeric_limits;
+using std::ofstream;
 using std::string;
 using std::to_string;
 using std::vector;
@@ -644,6 +646,7 @@ void checkNextBox(Alien &alien, Zombie &zombie, string &direction,
         alien.move(alien, direction);
         // remove zombie from zombies
         zombies.erase(zombies.begin() + ((int)whatIsInTheBox - 49));
+        ZombieCount--;
       }
       alien.attack = 0;
       playerTurn = 0;
@@ -657,6 +660,44 @@ void checkNextBox(Alien &alien, Zombie &zombie, string &direction,
       playerTurn = 0;
     }
   }
+}
+
+void saveFile(Alien &alien, vector<Zombie> &zombies, int ZombieCount) {
+  string saveFile;
+
+  cout << "Enter the file name to save the current game: ";
+  cin >> saveFile;
+
+  ofstream fout(saveFile);
+
+  // save imaginaryBoard dimensions
+  fout << BoardColumns << ' ' << BoardRows << endl;
+  fout << endl;
+
+  // save imaginaryBoard objects
+  // cout << BoardRows << BoardColumns << endl;
+  for (int row = 0; row < BoardRows; row++) {
+    for (int col = 0; col < BoardColumns; col++) {
+      fout << imaginaryBoard[row][col];
+    }
+    fout << endl;
+  }
+  fout << endl;
+
+  // alien attributes
+  fout << alien.getX() << ' ' << alien.getY() << ' ' << alien.health << ' '
+       << alien.attack << endl;
+
+  // zombie attributes
+  fout << zombies.size() << endl;
+
+  for (int i = 0; i < zombies.size(); i++) {
+    fout << zombies[i].getX() << ' ' << zombies[i].getY() << ' '
+         << zombies[i].health << ' ' << zombies[i].attack << ' '
+         << zombies[i].range << endl;
+  }
+
+  fout.close();
 }
 
 void receiveCommand(Alien &alien, Zombie &zombie, vector<Zombie> &zombies) {
@@ -695,9 +736,10 @@ void receiveCommand(Alien &alien, Zombie &zombie, vector<Zombie> &zombies) {
         break;
       case 'h':
         printf("\nInstructions  :\n");
-        printf("1. arrow keys/hjkl -> move alien\n");
-        printf("2. q -> quit\n");
-        printf("3. h -> display help message\n");
+        printf("1. arrow keys -> Move Alien\n");
+        printf("2. h -> Display Help Message\n");
+        printf("3. q -> Quit Game\n");
+        printf("4. s -> Save File\n");
         pf::Pause();
         pf::ClearScreen();
         showGameBoard();
@@ -726,18 +768,27 @@ void receiveCommand(Alien &alien, Zombie &zombie, vector<Zombie> &zombies) {
         break;
       } else if (c == 'w') {
         printf("\nInstructions  :\n");
-        printf("1. arrow keys/hjkl -> move alien\n");
-        printf("2. q -> quit\n");
-        printf("3. h -> display help message\n");
+        printf("1. arrow keys -> Move Alien\n");
+        printf("2. h -> Display Help Message\n");
+        printf("3. q -> Quit Game\n");
+        printf("4. s -> Save File\n");
         pf::Pause();
         pf::ClearScreen();
         showGameBoard();
         showGameCharacters(alien, zombie, zombies);
         receiveCommand(alien, zombie, zombies);
+      } else if (c == 's') {
+        cout << "\nSaving File..." << endl;
+        pf::Pause();
+        saveFile(alien, zombies, ZombieCount);
+        cout << "Saved File!" << endl;
+        playerTurn = 0;
+        gameOn = 0;
+        break;
       } else if (c == 27) {
         cin >> d;
         if (d != 91) {
-          cout << "Error! Please do not press Esc!" << endl;
+          cout << "\nError! Please do not press Esc!" << endl;
           cin >> c;
           cin >> d;
           cin >> e;
@@ -745,7 +796,7 @@ void receiveCommand(Alien &alien, Zombie &zombie, vector<Zombie> &zombies) {
           cin >> e;
         }
       } else {
-        cout << "ERROR! No Input received." << endl;
+        cout << "\nERROR! No Input received." << endl;
       }
 
       if ((c == 27) && (d == 91)) {
@@ -795,9 +846,10 @@ void receiveCommand(Alien &alien, Zombie &zombie, vector<Zombie> &zombies) {
         break;
       } else if (command == "help") {
         printf("\nInstructions  :\n");
-        printf("1. arrow keys/hjkl -> move alien\n");
-        printf("2. q -> quit\n");
-        printf("3. h -> display help message\n");
+        printf("1. up/down/left/right -> Move Alien\n");
+        printf("2. help -> Display Help Message\n");
+        printf("3. quit -> Quit Game\n");
+        printf("4. save -> Save File\n");
         pf::Pause();
         pf::ClearScreen();
         showGameBoard();
