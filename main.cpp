@@ -540,7 +540,13 @@ void checkNextBox(Alien &alien, Zombie &zombie, string &direction,
     }
     zombies[nearestZombieIndex - 1].health =
         zombies[nearestZombieIndex - 1].health - 10;
+    // show board
     showGameBoard();
+    showGameCharacters(alien, zombie, zombies);
+    // show message
+    printf("You picked up a pod! Dealt -10 damage to Zombie %i\n",
+           nearestZombieIndex);
+
     pf::Pause();
     break;
   case 'r':
@@ -773,10 +779,11 @@ int main() {
   Alien alien;
   Zombie zombie;
   vector<Zombie> zombies;
-  // create a game loop
+  // Game start
   generateGameSettings();
   createGameCharacters(alien, zombie, zombies);
   createGameBoard(alien, zombie, zombies);
+  // create a game loop
   while (gameOn) {
     if (playerTurn == 1) {
       showGameBoard();
