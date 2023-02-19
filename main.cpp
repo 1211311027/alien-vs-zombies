@@ -97,7 +97,8 @@ int Alien::getY() const { return y_; }
 // Zombie
 class Zombie : public Character {
 public:
-  int x, y;
+  int index;
+
   void setPos(int newX, int newY);
   void move(Zombie &zombie);
   void display(vector<Zombie> &zombies);
@@ -110,8 +111,9 @@ private:
 
 void Zombie::display(vector<Zombie> &zombies) {
   for (int i = 0; i < ZombieCount; i++) {
-    printf("   Zombie %i : life = %i, attack = %i, range = %i\n", i + 1,
-           zombies[i].life, zombies[i].attack, zombies[i].range);
+    printf("   Zombie %i : life = %i, attack = %i, range = %i\n",
+           zombies[i].index, zombies[i].life, zombies[i].attack,
+           zombies[i].range);
   }
 }
 void Zombie::setPos(int newX, int newY) {
@@ -229,7 +231,7 @@ void generateGameSettings() {
 // r**rAr**r
 // r*rr*rrr*
 // uncomment line 242, 244, 251, 254 to visualize imaginaryBoard
-void createGameBoard(Alien &alien) {
+void createGameBoard(Alien &alien, Zombie &zombie, vector<Zombie> &zombies) {
   // Randomize seed
   srand(time(0));
   // Initialize centerRow and centerColumn
@@ -247,7 +249,7 @@ void createGameBoard(Alien &alien) {
   // add more spaces to increase chances of empty spaces
   vector<char> gameObj = {' ', ' ', ' ', '^', 'v', '<', '>', 'h', 'p', 'r'};
 
-  // Add zombies
+  // Add zombies to the end of gameObj vector
   for (int i = 0; i < ZombieCount; i++) {
     // **POSSIBILITY OF BUG**:
     // random number doesnt reach the largest number and spawn less zombie
@@ -271,6 +273,13 @@ void createGameBoard(Alien &alien) {
         imaginaryBoard[y][x] = 'A';
         // cout << imaginaryBoard[row][col];
       } else if (random_number >= 8 && gameObj.size() >= 8) {
+        // zombie code
+        for (int i = 0; i < zombies.size(); i++) {
+          if (gameObj[random_number] == zombies[i].index) {
+            zombie = zombies[i];
+          }
+        };
+        zombie.setPos(col, row);
         imaginaryBoard[row][col] = gameObj[random_number];
         gameObj.erase( // remove the zombie spawned from the vector
             gameObj.begin() + random_number);
@@ -349,6 +358,7 @@ void createGameCharacters(Alien &alien, Zombie &zombie,
   alien.range = 1;
   // Create zombie attributes
   for (int i = 0; i < ZombieCount; i++) {
+    zombie.index = i + 1;
     zombie.life = (rand() % 4 + 1) * 50;
     zombie.attack = (rand() % 3 + 1) * 5;
     zombie.range = rand() % 5 + 1;
@@ -386,7 +396,8 @@ void checkNextBox(Alien &alien, string direction) {
     imaginaryBoard[y][x] = '.';
     // move alien to next box
     alien.move(alien, direction);
-    // pf::Pause();
+    // increase alien health
+    alien.life = alien.life + 20;
     break;
   case 'p':
     //  leave a trail
@@ -548,8 +559,8 @@ int main() {
   vector<Zombie> zombies;
   // create a game loop
   generateGameSettings();
-  createGameBoard(alien);
   createGameCharacters(alien, zombie, zombies);
+  createGameBoard(alien, zombie, zombies);
   while (gameOn) {
     if (playerTurn == 1) {
       showGameBoard();
