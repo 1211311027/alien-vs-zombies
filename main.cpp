@@ -384,25 +384,25 @@ void receiveCommand(Alien &alien) {
   if (command == "up") {
     cout << "Alien is moving up!" << endl;
     pf::Pause();
-    checkNextBox(alien, "up");
+    checkNextBox(alien, command);
     pf::ClearScreen();
   }
   if (command == "down") {
     cout << "Alien is moving down!" << endl;
     pf::Pause();
-    checkNextBox(alien, "down");
+    checkNextBox(alien, command);
     pf::ClearScreen();
   }
   if (command == "left") {
     cout << "Alien is moving to the left!" << endl;
     pf::Pause();
-    checkNextBox(alien, "left");
+    checkNextBox(alien, command);
     pf::ClearScreen();
   }
   if (command == "right") {
     cout << "Alien is moving to the right!" << endl;
     pf::Pause();
-    checkNextBox(alien, "right");
+    checkNextBox(alien, command);
     pf::ClearScreen();
   }
   if (command == "quit") {
