@@ -473,7 +473,7 @@ void receiveCommand(Alien &alien) {
       printf("\nInstructions  :\n");
       printf("1. arrow keys/hjkl -> move alien\n");
       printf("2. q -> quit\n");
-      printf("3. w -> display help message\n");
+      printf("3. h -> display help message\n");
       pf::Pause();
     default:
       cout << endl << (char)ex << endl; // not arrow
