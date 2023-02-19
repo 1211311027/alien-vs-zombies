@@ -441,6 +441,10 @@ void updateGameBoard(){
 void receiveCommand(Alien &alien) {
   string command;
 #if defined(_WIN32)
+#define KEY_UP 72
+#define KEY_LEFT 75
+#define KEY_RIGHT 77
+#define KEY_DOWN 80
   cout << "<command> ";
   c = getch();
   if (c && c != 224) {
@@ -454,7 +458,7 @@ void receiveCommand(Alien &alien) {
       command = "up"; // key up
       break;
     case KEY_DOWN /* K */:
-      command = "up"; // key down
+      command = "down"; // key down
       break;
     case KEY_LEFT /* M */:
       command = "left"; // key left
@@ -462,6 +466,15 @@ void receiveCommand(Alien &alien) {
     case KEY_RIGHT:      /* P */
       command = "right"; // key right
       break;
+    case 'q':
+      gameOn = 0;
+      break;
+    case 'h':
+      printf("\nInstructions  :\n");
+      printf("1. arrow keys/hjkl -> move alien\n");
+      printf("2. q -> quit\n");
+      printf("3. w -> display help message\n");
+      pf::Pause();
     default:
       cout << endl << (char)ex << endl; // not arrow
       break;
@@ -478,8 +491,28 @@ void receiveCommand(Alien &alien) {
   char c, d, e;
   cout << "<command> ";
   cin >> c;
-  cin >> d;
-  cin >> e;
+  if (c != 27) {
+    if (c == 'q') {
+      gameOn = 0;
+    } else if (c == 'w') {
+      printf("\nInstructions  :\n");
+      printf("1. arrow keys/hjkl -> move alien\n");
+      printf("2. q -> quit\n");
+      printf("3. w -> display help message\n");
+      pf::Pause();
+    } else if (c == 'h') {
+      command = "left";
+    } else if (c == 'j') {
+      command = "down";
+    } else if (c == 'k') {
+      command = "up";
+    } else if (c == 'l') {
+      command = "right";
+    }
+  } else {
+    cin >> d;
+    cin >> e;
+  }
 
   if ((c == 27) && (d == 91)) {
     if (e == 65) {
