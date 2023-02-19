@@ -253,6 +253,7 @@ void createGameBoard(Alien &alien, Zombie &zombie, vector<Zombie> &zombies) {
   // r - rock
   // add more spaces to increase chances of empty spaces
   vector<char> gameObj = {' ', ' ', ' ', '^', 'v', '<', '>', 'h', 'p', 'r'};
+  int startingLength = gameObj.size();
 
   // Add zombies to the end of gameObj vector
   for (int i = 0; i < zombies.size(); i++) {
@@ -260,7 +261,9 @@ void createGameBoard(Alien &alien, Zombie &zombie, vector<Zombie> &zombies) {
     // random number doesnt reach the largest number and spawn less zombie
     // idea: append zombies to the front instead, and change rand() range less
     // until all zombies are spawned
-    gameObj.push_back(char(i + 49)); // '1' is 49 in ASCII
+    cout << "Zombie Index: " << zombies[i].index << endl;
+    pf::Pause();
+    gameObj.push_back(char(zombies[i].index + 48)); // '1' is 49 in ASCII
   }
   // Generate Real Game Board
   imaginaryBoard.resize(BoardRows);
@@ -276,11 +279,10 @@ void createGameBoard(Alien &alien, Zombie &zombie, vector<Zombie> &zombies) {
         // cout << centerColumn << centerRow << endl; // 4, 2
         imaginaryBoard[y][x] = 'A';
         // cout << imaginaryBoard[row][col];
-      } else if (random_number >= 10 && gameObj.size() >= 10) {
+      } else if (random_number > startingLength &&
+                 gameObj.size() > startingLength) {
         // zombie code
-        int num = (int)gameObj[random_number] - 48 -
-                  1; // convert '1' to 1,
-                     // then change 1 to 0 for indexing in array
+        int num = (int)gameObj[random_number] - 49; // convert '1' to 0
         zombies[num].setPos(col, row);
         imaginaryBoard[zombies[num].getY()][zombies[num].getX()] =
             gameObj[random_number];
