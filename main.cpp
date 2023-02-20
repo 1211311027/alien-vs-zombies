@@ -506,7 +506,7 @@ void createGameCharacters(Alien &alien, Zombie &zombie,
                           vector<Zombie> &zombies) {
   srand(time(0));
   // Create alien attributes
-  alien.health = (rand() % 4 + 1) * 50;
+  alien.health = 100;
   alien.attack = 0;
   alien.range = 1;
   // Create zombie attributes
@@ -533,6 +533,8 @@ void checkNextBox(Alien &alien, Zombie &zombie, string &direction,
   int y = alien.getY();
   int distance = numeric_limits<int>::max();
   int nearestZombieIndex;
+  int increaseHealth = 20;
+  int newHealth = alien.health + increaseHealth;
   //  check what is in next box
   if (direction == "up" && y != 0) {
     whatIsInTheBox = imaginaryBoard[y - 1][x];
@@ -552,10 +554,14 @@ void checkNextBox(Alien &alien, Zombie &zombie, string &direction,
     // move alien to next box
     alien.move(alien, direction);
     // increase alien health
-    alien.health = alien.health + 20;
+    if (newHealth >= alien.health) {
+      alien.health = 100;
+    } else {
+      alien.health = alien.health + increaseHealth;
+    }
     showGameBoard();
     showGameCharacters(alien, zombie, zombies);
-    printf("You picked up a health pack! Health +20!\n");
+    printf("You picked up a health pack! Health +%i!\n", increaseHealth);
     pf::Pause();
     break;
   case 'p':
