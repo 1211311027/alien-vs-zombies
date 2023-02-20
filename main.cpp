@@ -237,9 +237,12 @@ void welcomeMenu() {
     cout << endl;
     cout << "Choice => ";
     cin >> newOrLoadGame;
-    if (newOrLoadGame == '1' || newOrLoadGame == '2' ||
-        toupper(newOrLoadGame) == 'Q') {
+    if (newOrLoadGame == '1' || newOrLoadGame == '2') {
       pf::ClearScreen();
+      break;
+    } else if (toupper(newOrLoadGame) == 'Q') {
+      playerTurn = 0;
+      gameOn = 0;
       break;
     }
   }
