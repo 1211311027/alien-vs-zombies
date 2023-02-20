@@ -614,6 +614,7 @@ void checkNextBox(Alien &alien, Zombie &zombie, string &direction,
     break;
   case 'r':
     message = "Alien hits a rock! Turn ends";
+    alien.attack = 0;
     playerTurn = 0;
     break;
   case ' ':

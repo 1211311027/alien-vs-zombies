@@ -97,3 +97,10 @@ Describe the problems encountered and provide the solutions / plan for the solut
 3. On Windows, when input type 1 is set (arrow key input), it does not take spacebar as input correctly
    Solved:
    solution -> call receiveCommand() again when spacebar is detected
+
+Current Problems:
+
+4. Load file does not work if board is too big
+   After load file, zombies will be spawned as 0
+
+5. Zombies do not detect what is in the box ahead, if zombies touch each other, it will occur error
