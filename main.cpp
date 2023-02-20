@@ -809,6 +809,7 @@ void receiveCommand(Alien &alien, Zombie &zombie, vector<Zombie> &zombies) {
           break;
         } else if (toupper(input) == 'N') {
           printf("\n");
+          receiveCommand(alien, zombie, zombies);
         } else {
           bool flag = 1;
           bool quitFlag = 0;
