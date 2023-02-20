@@ -264,12 +264,16 @@ void generateGameSettings() {
   if (toupper(changeSettings) == 'Y') {
     pf::ClearScreen();
     // Receive input for input settings
-    cout << "Input Settings" << endl;
-    cout << "----------------" << endl;
-    cout << "(1 - Arrow Keys, 2 - Type Commands)" << endl;
-    cout << "Input type => ";
-    cin >> preferredInput;
-    cout << endl;
+    while (true) {
+      cout << "Input Settings" << endl;
+      cout << "----------------" << endl;
+      cout << "(1 - Arrow Keys, 2 - Type Commands)" << endl;
+      cout << "Input type => ";
+      cin >> preferredInput;
+      cout << endl;
+      if (preferredInput == '1' || preferredInput == '2')
+        break;
+    }
 
     // Receive input for board rows
     int input;
@@ -681,13 +685,12 @@ void saveFile(Alien &alien, vector<Zombie> &zombies, int ZombieCount) {
   fout << BoardColumns << ' ' << BoardRows;
 
   // save imaginaryBoard objects
-  // cout << BoardRows << BoardColumns << endl;
   for (int row = 0; row < BoardRows; row++) {
     for (int col = 0; col < BoardColumns; col++) {
       fout << imaginaryBoard[row][col];
     }
   }
-  fout << endl;
+  fout << ' ' << endl;
 
   // alien attributes
   fout << alien.getX() << ' ' << alien.getY() << ' ' << alien.health << ' '
@@ -716,22 +719,22 @@ int loadFile(Alien &alien, vector<Zombie> &zombies, int ZombieCount) {
 
   if (fin.is_open()) {
     if (fin.good()) {
-      // reads board dimensions
+      // read board dimensions
       int board_column, board_row;
       fin >> board_column >> board_row;
+      BoardColumns = board_column;
+      BoardRows = board_row;
 
-      // reads object in each coordinate
+      // read board objects
+      imaginaryBoard.resize(board_row);
       for (int row = 0; row < board_row; row++) {
         for (int col = 0; col < board_column; col++) {
+          imaginaryBoard.resize(board_column);
           char obj;
           fin.get(obj);
-          cout << imaginaryBoard[row][col];
-          // cout << obj;
-          // imaginaryBoard[row][col] = obj;
+          imaginaryBoard[row][col] = obj;
         }
-        // cout << endl;
       }
-      printf("This line is running!\n");
 
       int alien_x, alien_y, alien_health, alien_attack;
       fin >> alien_x >> alien_y >> alien_health >> alien_attack;
@@ -799,6 +802,14 @@ void receiveCommand(Alien &alien, Zombie &zombie, vector<Zombie> &zombies) {
         playerTurn = 0;
         gameOn = 0;
         break;
+      case 's':
+        cout << "\nSaving File..." << endl;
+        pf::Pause();
+        saveFile(alien, zombies, ZombieCount);
+        cout << "Saved File!" << endl;
+        playerTurn = 0;
+        gameOn = 0;
+        break;
       case 'h':
         printf("\nInstructions  :\n");
         printf("1. arrow keys -> Move Alien\n");
@@ -831,7 +842,7 @@ void receiveCommand(Alien &alien, Zombie &zombie, vector<Zombie> &zombies) {
         playerTurn = 0;
         gameOn = 0;
         break;
-      } else if (c == 'w') {
+      } else if (c == 'h') {
         printf("\nInstructions  :\n");
         printf("1. arrow keys -> Move Alien\n");
         printf("2. h -> Display Help Message\n");
@@ -920,6 +931,14 @@ void receiveCommand(Alien &alien, Zombie &zombie, vector<Zombie> &zombies) {
         showGameBoard();
         showGameCharacters(alien, zombie, zombies);
         receiveCommand(alien, zombie, zombies);
+      } else if (command == "save") {
+        cout << "\nSaving File..." << endl;
+        pf::Pause();
+        saveFile(alien, zombies, ZombieCount);
+        cout << "Saved File!" << endl;
+        playerTurn = 0;
+        gameOn = 0;
+        break;
       }
     }
   }
@@ -972,9 +991,12 @@ int main() {
     createGameCharacters(alien, zombie, zombies);
     createGameBoard(alien, zombie, zombies);
   } else if (newOrLoadGame == '2') {
+    createGameCharacters(alien, zombie, zombies);
+    createGameBoard(alien, zombie, zombies);
     cout << "\nLoading File..." << endl;
     loadFile(alien, zombies, ZombieCount);
-    cout << "Loaded File!" << endl;
+    cout << "\nLoaded File!" << endl;
+    pf::Pause();
   }
 
   // create a game loop
