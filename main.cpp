@@ -733,6 +733,7 @@ int loadFile(Alien &alien, vector<Zombie> &zombies, int ZombieCount) {
       alien.attack = alien_attack;
 
       fin >> total_zombie;
+      ZombieCount = total_zombie;
 
       zombies.clear();
 
