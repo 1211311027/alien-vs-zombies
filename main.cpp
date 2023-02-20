@@ -779,9 +779,33 @@ void receiveCommand(Alien &alien, Zombie &zombie, vector<Zombie> &zombies) {
     if (c && c != 224) {
       switch (c) {
       case 'q':
-        playerTurn = 0;
-        gameOn = 0;
-        break;
+        printf("\nAre you sure to quit game? (y/n) ");
+        cin >> input;
+        if (toupper(input) == 'Y') {
+          playerTurn = 0;
+          gameOn = 0;
+          break;
+        } else if (toupper(input) == 'N') {
+          printf("\n");
+        } else {
+          bool flag = 1;
+          bool quitFlag = 0;
+          while (flag == 1) {
+            printf("\nAre you sure to quit game? (y/n) ");
+            cin >> input;
+            if (toupper(input) == 'Y') {
+              flag = 0;
+              quitFlag = 1;
+            } else if (toupper(input) == 'N')
+              flag = 0;
+          }
+          if (quitFlag == 1) {
+            playerTurn = 0;
+            gameOn = 0;
+            break;
+          }
+          printf("\n");
+        }
       case 's':
         cout << "\nSaving File..." << endl;
         pf::Pause();
@@ -851,7 +875,7 @@ void receiveCommand(Alien &alien, Zombie &zombie, vector<Zombie> &zombies) {
           printf("\n");
         } else {
           bool flag = 1;
-          bool quitFlag = 1;
+          bool quitFlag = 0;
           while (flag == 1) {
             printf("\nAre you sure to quit game? (y/n) ");
             cin >> input;
@@ -943,9 +967,30 @@ void receiveCommand(Alien &alien, Zombie &zombie, vector<Zombie> &zombies) {
         break;
       }
       if (command == "quit") {
-        playerTurn = 0;
-        gameOn = 0;
-        break;
+        printf("Are you sure to quit game? (y/n) ");
+        cin >> input;
+        if (toupper(input) == 'Y') {
+          playerTurn = 0;
+          gameOn = 0;
+          break;
+        } else if (toupper(input) != 'N') {
+          bool flag = 1;
+          bool quitFlag = 0;
+          while (flag == 1) {
+            printf("Are you sure to quit game? (y/n) ");
+            cin >> input;
+            if (toupper(input) == 'Y') {
+              flag = 0;
+              quitFlag = 1;
+            } else if (toupper(input) == 'N')
+              flag = 0;
+          }
+          if (quitFlag == 1) {
+            playerTurn = 0;
+            gameOn = 0;
+            break;
+          }
+        }
       } else if (command == "help") {
         printf("\nInstructions  :\n");
         printf("1. up/down/left/right -> Move Alien\n");
