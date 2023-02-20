@@ -206,20 +206,6 @@ void Zombie::display(vector<Zombie> &zombies) {
 int Zombie::getX() const { return x_; }
 int Zombie::getY() const { return y_; }
 
-// Game Objects
-struct gameObj {
-  char space;
-  char up;
-  char down;
-  char left;
-  char right;
-  char health;
-  char pod;
-  char rock;
-};
-gameObj gameObj = {' ', '^', 'v', '<', '>', 'h', 'p', 'r'};
-// access it with gameObj.health for example, to replace objects in board
-
 // Welcome Menu
 void welcomeMenu() {
   while (true) {
