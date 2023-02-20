@@ -783,26 +783,8 @@ void receiveCommand(Alien &alien, Zombie &zombie, vector<Zombie> &zombies) {
     int c, ex;
     c = getch();
     if (c && c != 224) {
-      cout << endl << "Not arrow: " << (char)c << endl;
-    } else {
-      switch (
-          ex =
-              getch()) { // small bug: as arrow key return a scan code of two
-                         // characters, (0) or (224), "H", "K", "M", and "P" are
-                         // misinterpreted as "Up", "Down", "Left", and "Right"
-      case KEY_UP /* H */:
-        command = "up"; // key up
-        break;
-      case KEY_DOWN /* K */:
-        command = "down"; // key down
-        break;
-      case KEY_LEFT /* M */:
-        command = "left"; // key left
-        break;
-      case KEY_RIGHT:      /* P */
-        command = "right"; // key right
-        break;
-      case 'q':
+      switch (c) {
+        case 'q':
         playerTurn = 0;
         gameOn = 0;
         break;
@@ -825,6 +807,25 @@ void receiveCommand(Alien &alien, Zombie &zombie, vector<Zombie> &zombies) {
         showGameBoard();
         showGameCharacters(alien, zombie, zombies);
         receiveCommand(alien, zombie, zombies);
+      }
+    } else {
+      switch (
+          ex =
+              getch()) { // small bug: as arrow key return a scan code of two
+                         // characters, (0) or (224), "H", "K", "M", and "P" are
+                         // misinterpreted as "Up", "Down", "Left", and "Right"
+      case KEY_UP /* H */:
+        command = "up"; // key up
+        break;
+      case KEY_DOWN /* K */:
+        command = "down"; // key down
+        break;
+      case KEY_LEFT /* M */:
+        command = "left"; // key left
+        break;
+      case KEY_RIGHT:      /* P */
+        command = "right"; // key right
+        break;
       default:
         cout << endl << (char)ex << endl; // not arrow
         break;
