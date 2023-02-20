@@ -27,6 +27,7 @@
 using std::cin;
 using std::cout;
 using std::endl;
+using std::ifstream;
 using std::numeric_limits;
 using std::ofstream;
 using std::string;
@@ -41,6 +42,7 @@ char changeSettings;
 vector<vector<char>> imaginaryBoard;
 bool gameOn = 1;
 bool playerTurn = 1;
+bool alienWon = 0;
 string message;
 char newOrLoadGame;
 char preferredInput = '1';
@@ -346,7 +348,7 @@ void generateGameSettings() {
 // **r*r*rr*
 // r**rAr**r
 // r*rr*rrr*
-// uncomment line 242, 244, 251, 254 to visualize imaginaryBoard
+// uncomment line 388, 390, 401, 404 to visualize imaginaryBoard
 void createGameBoard(Alien &alien, Zombie &zombie, vector<Zombie> &zombies) {
   // Randomize seed
   srand(time(0));
@@ -637,8 +639,8 @@ void checkNextBox(Alien &alien, Zombie &zombie, string &direction,
       // attacks zombie!
       zombies[(int)whatIsInTheBox - 49].health =
           zombies[(int)whatIsInTheBox - 49].health - alien.attack;
-      message =
-          string("You attacked zombie ") + to_string(zombie.index) + "!\n";
+      message = string("You attacked zombie ") +
+                to_string(zombies[(int)whatIsInTheBox - 49].index) + "!\n";
       if (zombies[(int)whatIsInTheBox - 49].health <= 0) { // kills zombie
         //  leave a trail
         imaginaryBoard[y][x] = '.';
@@ -647,16 +649,21 @@ void checkNextBox(Alien &alien, Zombie &zombie, string &direction,
         // remove zombie from zombies
         zombies.erase(zombies.begin() + ((int)whatIsInTheBox - 49));
         ZombieCount--;
+        // show message
+        message = string("You killed zombie ") +
+                  to_string(zombies[(int)whatIsInTheBox - 49].index) + "!\n";
+        if (zombies.size() < 1) {
+          message = message + "There are no more zombies!\n" +
+                    "Congratulations, you won!\n";
+          playerTurn = 0;
+          alienWon = 1;
+        }
       }
-      alien.attack = 0;
+      // alien.attack = 0;
       playerTurn = 0;
     } else {
-      // cout << "The Box has: " << whatIsInTheBox << endl;
-      // cout << "The Box has: " << whatIsInTheBox << endl;
-      // cout << "The Box has: " << whatIsInTheBox << endl;
-      // pf::Pause();
       message = "Alien hits a wall! Turn ends";
-      alien.attack = 0; // reset alien attack to 0
+      // alien.attack = 0; // reset alien attack to 0
       playerTurn = 0;
     }
   }
@@ -671,8 +678,7 @@ void saveFile(Alien &alien, vector<Zombie> &zombies, int ZombieCount) {
   ofstream fout(saveFile);
 
   // save imaginaryBoard dimensions
-  fout << BoardColumns << ' ' << BoardRows << endl;
-  fout << endl;
+  fout << BoardColumns << ' ' << BoardRows;
 
   // save imaginaryBoard objects
   // cout << BoardRows << BoardColumns << endl;
@@ -680,7 +686,6 @@ void saveFile(Alien &alien, vector<Zombie> &zombies, int ZombieCount) {
     for (int col = 0; col < BoardColumns; col++) {
       fout << imaginaryBoard[row][col];
     }
-    fout << endl;
   }
   fout << endl;
 
@@ -698,6 +703,66 @@ void saveFile(Alien &alien, vector<Zombie> &zombies, int ZombieCount) {
   }
 
   fout.close();
+}
+
+int loadFile(Alien &alien, vector<Zombie> &zombies, int ZombieCount) {
+  int total_zombie = ZombieCount;
+
+  string loadFile;
+  cout << "Enter the file name to load: ";
+  cin >> loadFile;
+
+  ifstream fin(loadFile);
+
+  if (fin.is_open()) {
+    if (fin.good()) {
+      // reads board dimensions
+      int board_column, board_row;
+      fin >> board_column >> board_row;
+
+      // reads object in each coordinate
+      for (int row = 0; row < board_row; row++) {
+        for (int col = 0; col < board_column; col++) {
+          char obj;
+          fin.get(obj);
+          cout << imaginaryBoard[row][col];
+          // cout << obj;
+          // imaginaryBoard[row][col] = obj;
+        }
+        // cout << endl;
+      }
+      printf("This line is running!\n");
+
+      int alien_x, alien_y, alien_health, alien_attack;
+      fin >> alien_x >> alien_y >> alien_health >> alien_attack;
+
+      alien.setPos(alien_x, alien_y);
+      alien.health = alien_health;
+      alien.attack = alien_attack;
+
+      fin >> total_zombie;
+
+      zombies.clear();
+
+      for (int i = 0; i < total_zombie; i++) {
+        int zombie_x, zombie_y, zombie_health, zombie_attack, zombie_range;
+        fin >> zombie_x >> zombie_y >> zombie_health >> zombie_attack >>
+            zombie_range;
+
+        Zombie zombie;
+        zombie.setPos(zombie_x, zombie_y);
+        zombie.health = zombie_health;
+        zombie.attack = zombie_attack;
+        zombie.range = zombie_range;
+        zombies.push_back(zombie);
+      }
+    }
+  } else
+    cout << "Failed to open file." << endl;
+
+  fin.close();
+
+  return total_zombie;
 }
 
 void receiveCommand(Alien &alien, Zombie &zombie, vector<Zombie> &zombies) {
@@ -907,7 +972,9 @@ int main() {
     createGameCharacters(alien, zombie, zombies);
     createGameBoard(alien, zombie, zombies);
   } else if (newOrLoadGame == '2') {
-    gameOn = 0;
+    cout << "\nLoading File..." << endl;
+    loadFile(alien, zombies, ZombieCount);
+    cout << "Loaded File!" << endl;
   }
 
   // create a game loop
@@ -920,15 +987,17 @@ int main() {
       showGameBoard();
       showGameCharacters(alien, zombie, zombies);
       printf("%s\n", message.c_str());
-      printf("Zombies will start moving now!\n");
-      pf::Pause();
-      pf::ClearScreen();
-      zombie.move(alien, zombie, zombies);
-      // check if alien is in zombie range, if is, attack!
-      updateGameBoard(alien, zombie, zombies);
-      // check range
-      // if in range, attack
-      playerTurn = 1;
+      if (alienWon != 1) {
+        printf("Zombies will start moving now!\n");
+        pf::Pause();
+        pf::ClearScreen();
+        zombie.move(alien, zombie, zombies);
+        updateGameBoard(alien, zombie, zombies);
+        playerTurn = 1;
+      } else {
+        pf::Pause();
+        gameOn = 0;
+      }
     }
   }
 
