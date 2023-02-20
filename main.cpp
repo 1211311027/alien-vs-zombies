@@ -278,9 +278,15 @@ void generateGameSettings() {
       cin >> input;
     }
     // Check if input is even
-    while (input % 2 == 0) {
+    while (!cin.fail() && input % 2 == 0) {
       cout << "Invalid input. Enter an odd number: ";
       cin >> input;
+      if (cin.fail()) {
+      cout << "Invalid input. Enter a number: ";
+      cin.clear();
+      cin.ignore(256, '\n');
+      cin >> input;
+      }
     }
     // Set new board rows
     BoardRows = input;
@@ -296,9 +302,15 @@ void generateGameSettings() {
       cin >> input;
     }
     // Check if input is even
-    while (input % 2 == 0) {
+    while (!cin.fail() && input % 2 == 0) {
       cout << "Invalid input. Enter an odd number: ";
       cin >> input;
+      if (cin.fail()) {
+      cout << "Invalid input. Enter a number: ";
+      cin.clear();
+      cin.ignore(256, '\n');
+      cin >> input;
+      }
     }
     // Set new board columns
     BoardColumns = input;
@@ -316,11 +328,10 @@ void generateGameSettings() {
       cin.ignore(256, '\n');
       cin >> input;
     }
-    // Check if input is even
-    while (input == 0 || input > 9) {
-      cout << "Invalid input. Number of zombies must be between 1 to 9."
-           << endl;
-      cout << "Enter number of zombies => ";
+    while (input < 1 || input > 9) {
+      cout << "Invalid input. Enter a number in range of 1 to 9: ";
+      cin.clear();
+      cin.ignore(256, '\n');
       cin >> input;
     }
     // Set new zombie counts
