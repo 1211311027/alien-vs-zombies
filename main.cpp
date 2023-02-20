@@ -46,6 +46,7 @@ bool alienWon = 0;
 string message;
 char newOrLoadGame;
 char preferredInput = '1';
+int maxZombie = 9;
 
 // epic math time a^2 = b^2 + c^2
 int checkDistance(int x1, int y1, int x2, int y2) {
@@ -315,11 +316,21 @@ void generateGameSettings() {
     // Set new board columns
     BoardColumns = input;
     cout << endl;
+    
+    // calculate maxZombie
+    // if board is 3x3
+    // amount of spaces = 3*3 - 1
+    // because its odd x odd, it will be even
+    // if maxZombie <= amount of spaces, maxZombie valid
+    int boardSpace = BoardColumns * BoardRows - 1;
+    while (maxZombie > boardSpace) {
+    maxZombie--;
+    }
 
     // Receive input for zombie counts
     cout << "Zombie Settings" << endl;
     cout << "-----------------" << endl;
-    cout << "Enter number of zombies => ";
+    printf("Enter number of zombies (1 to %i) => ", maxZombie);
     cin >> input;
     // Check if input is a number
     while (cin.fail()) {
@@ -328,8 +339,8 @@ void generateGameSettings() {
       cin.ignore(256, '\n');
       cin >> input;
     }
-    while (input < 1 || input > 9) {
-      cout << "Invalid input. Enter a number in range of 1 to 9: ";
+    while (input < 1 || input > maxZombie) {
+      printf("Invalid input. Enter a number in range of 1 to %i: ", maxZombie);
       cin.clear();
       cin.ignore(256, '\n');
       cin >> input;
