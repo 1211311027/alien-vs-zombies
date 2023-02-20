@@ -793,6 +793,9 @@ void receiveCommand(Alien &alien, Zombie &zombie, vector<Zombie> &zombies) {
         showGameBoard();
         showGameCharacters(alien, zombie, zombies);
         receiveCommand(alien, zombie, zombies);
+        default:
+        receiveCommand(alien, zombie, zombies);
+        break;
       }
     } else {
       switch (

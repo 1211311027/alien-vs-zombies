@@ -94,3 +94,6 @@ Describe the problems encountered and provide the solutions / plan for the solut
    solution a -> temporarily enable grabbing of terminal buffer when save file mode is entered
    solution b -> end the game and rerun it again, and automatically enters save file mode with input type 2
 
+3. On Windows, when input type 1 is set (arrow key input), it does not take spacebar as input correctly
+   Solved:
+   solution -> call receiveCommand() again when spacebar is detected
