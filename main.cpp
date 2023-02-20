@@ -766,6 +766,7 @@ int loadFile(Alien &alien, vector<Zombie> &zombies, int ZombieCount) {
 
 void receiveCommand(Alien &alien, Zombie &zombie, vector<Zombie> &zombies) {
   string command;
+  char input;
   if (preferredInput == '1') { // Arrow key
 #if defined(_WIN32)
 #define KEY_UP 72
@@ -777,7 +778,7 @@ void receiveCommand(Alien &alien, Zombie &zombie, vector<Zombie> &zombies) {
     c = getch();
     if (c && c != 224) {
       switch (c) {
-        case 'q':
+      case 'q':
         playerTurn = 0;
         gameOn = 0;
         break;
@@ -800,7 +801,7 @@ void receiveCommand(Alien &alien, Zombie &zombie, vector<Zombie> &zombies) {
         showGameBoard();
         showGameCharacters(alien, zombie, zombies);
         receiveCommand(alien, zombie, zombies);
-        default:
+      default:
         receiveCommand(alien, zombie, zombies);
         break;
       }
@@ -840,9 +841,33 @@ void receiveCommand(Alien &alien, Zombie &zombie, vector<Zombie> &zombies) {
       char c, d, e;
       cin >> c;
       if (c == 'q') {
-        playerTurn = 0;
-        gameOn = 0;
-        break;
+        printf("\nAre you sure to quit game? (y/n) ");
+        cin >> input;
+        if (toupper(input) == 'Y') {
+          playerTurn = 0;
+          gameOn = 0;
+          break;
+        } else if (toupper(input) == 'N') {
+          printf("\n");
+        } else {
+          bool flag = 1;
+          bool quitFlag = 1;
+          while (flag == 1) {
+            printf("\nAre you sure to quit game? (y/n) ");
+            cin >> input;
+            if (toupper(input) == 'Y') {
+              flag = 0;
+              quitFlag = 1;
+            } else if (toupper(input) == 'N')
+              flag = 0;
+          }
+          if (quitFlag == 1) {
+            playerTurn = 0;
+            gameOn = 0;
+            break;
+          }
+          printf("\n");
+        }
       } else if (c == 'h') {
         printf("\nInstructions  :\n");
         printf("1. arrow keys -> Move Alien\n");
