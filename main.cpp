@@ -666,11 +666,11 @@ void checkNextBox(Alien &alien, Zombie &zombie, string &direction,
           alienWon = 1;
         }
       }
-      // alien.attack = 0;
+      alien.attack = 0;
       playerTurn = 0;
     } else {
       message = "Alien hits a wall! Turn ends";
-      // alien.attack = 0; // reset alien attack to 0
+      alien.attack = 0; // reset alien attack to 0
       playerTurn = 0;
     }
   }
@@ -780,6 +780,7 @@ void receiveCommand(Alien &alien, Zombie &zombie, vector<Zombie> &zombies) {
 #define KEY_RIGHT 77
 #define KEY_DOWN 80
     cout << "<command> ";
+    int c, ex;
     c = getch();
     if (c && c != 224) {
       cout << endl << "Not arrow: " << (char)c << endl;
