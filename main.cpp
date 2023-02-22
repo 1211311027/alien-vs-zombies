@@ -283,10 +283,10 @@ void generateGameSettings() {
       cout << "Invalid input. Enter an odd number: ";
       cin >> input;
       if (cin.fail()) {
-      cout << "Invalid input. Enter a number: ";
-      cin.clear();
-      cin.ignore(256, '\n');
-      cin >> input;
+        cout << "Invalid input. Enter a number: ";
+        cin.clear();
+        cin.ignore(256, '\n');
+        cin >> input;
       }
     }
     // Set new board rows
@@ -307,16 +307,16 @@ void generateGameSettings() {
       cout << "Invalid input. Enter an odd number: ";
       cin >> input;
       if (cin.fail()) {
-      cout << "Invalid input. Enter a number: ";
-      cin.clear();
-      cin.ignore(256, '\n');
-      cin >> input;
+        cout << "Invalid input. Enter a number: ";
+        cin.clear();
+        cin.ignore(256, '\n');
+        cin >> input;
       }
     }
     // Set new board columns
     BoardColumns = input;
     cout << endl;
-    
+
     // calculate maxZombie
     // if board is 3x3
     // amount of spaces = 3*3 - 1
@@ -324,7 +324,7 @@ void generateGameSettings() {
     // if maxZombie <= amount of spaces, maxZombie valid
     int boardSpace = BoardColumns * BoardRows - 1;
     while (maxZombie > boardSpace) {
-    maxZombie--;
+      maxZombie--;
     }
 
     // Receive input for zombie counts
@@ -576,7 +576,7 @@ void checkNextBox(Alien &alien, Zombie &zombie, string &direction,
     // move alien to next box
     alien.move(alien, direction);
     // increase alien health
-    if (newHealth >= alien.health) {
+    if (newHealth >= alien.health && newHealth <= 100) {
       alien.health = 100;
     } else {
       alien.health = alien.health + increaseHealth;
